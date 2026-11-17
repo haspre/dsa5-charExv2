@@ -72,6 +72,8 @@ with a missing-price count. Zero is treated as a valid price. Prices follow the
 document language's number format. The valuation is calculated at export time.
 Weight, carry capacity and value each have a separate, generously sized summary
 field below their label. Without prices, only weight and carry capacity appear.
+The purse also has separate, full-width quantity fields below each denomination,
+so multi-digit balances remain legible instead of shrinking to tiny inline text.
 
 The total weight uses DSA5's prepared `system.totalWeight` when available,
 including the system's equipment/container rules. For unprepared imports it falls

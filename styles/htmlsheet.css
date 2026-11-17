@@ -589,8 +589,33 @@
   font-weight: 700;
 }
 
+#dsa5-htmlsheet .purse-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
 #dsa5-htmlsheet .coin {
-  margin-right: 14px;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--sheet-rule);
+  background: var(--sheet-fill);
+}
+
+#dsa5-htmlsheet .coin .coin-name {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--sheet-muted);
+}
+
+#dsa5-htmlsheet .coin .coin-quantity {
+  display: block;
+  min-height: 28px;
+  line-height: 28px;
+  font-size: 14px;
+  text-align: right;
 }
 
 #dsa5-htmlsheet .inventory-table { table-layout: fixed; }

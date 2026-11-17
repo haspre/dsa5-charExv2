@@ -1,9 +1,14 @@
 {{#unless continuation}}
 <div class="purse-row sheet-block">
-  <span class="trait-label">{{labels.purse}}</span>
-  {{#each snapshot.coins}}
-  <span class="coin">{{name}} <span class="pdf-field" data-pdf-field="coin.{{@index}}">{{quantity}}</span></span>
-  {{/each}}
+  <h2>{{labels.purse}}</h2>
+  <div class="purse-grid">
+    {{#each snapshot.coins}}
+    <div class="coin">
+      <span class="coin-name">{{name}}</span>
+      <b class="coin-quantity pdf-field" data-pdf-field="coin.{{@index}}" data-pdf-align="right">{{quantity}}</b>
+    </div>
+    {{/each}}
+  </div>
 </div>
 {{/unless}}
 <table class="sheet-table inventory-table {{#if snapshot.inventoryValue.hasPrices}}has-prices{{/if}}" data-split>

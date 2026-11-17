@@ -58,6 +58,12 @@ const pricedEquipment = actor.items.filter(item => item.type === 'equipment');
 pricedEquipment[0].system.price = { value: 1.25 };
 pricedEquipment[1].system.price = { value: 0 };
 pricedEquipment[2].system.price = { value: 0.1 };
+actor.items.find(item => item.type === 'money').system.quantity.value = 123456;
+actor.items.push(
+  { name: 'Silverthaler', type: 'money', system: { quantity: { value: 98765 } } },
+  { name: 'Haler', type: 'money', system: { quantity: { value: 4321 } } },
+  { name: 'Kreutzer', type: 'money', system: { quantity: { value: 0 } } },
+);
 for (const spell of actor.items.filter(item => item.type === 'spell')) {
   spell.system.effect.value = 'Lange Zauberwirkung mit mehreren Zeilen. '.repeat(12);
 }
@@ -145,6 +151,12 @@ try {
             const value = el.querySelector('[data-pdf-field]').getBoundingClientRect();
             return { width: value.width, height: value.height, labelGap: value.top - label.bottom };
           }),
+          coinFields: [...host.querySelectorAll('.coin')].map(el => {
+            const value = el.querySelector('[data-pdf-field]');
+            const label = el.querySelector('.coin-name');
+            const rect = value.getBoundingClientRect();
+            return { width: rect.width, height: rect.height, fontSize: parseFloat(getComputedStyle(value).fontSize), gap: label ? rect.top - label.getBoundingClientRect().bottom : 0 };
+          }),
           extensions: [...host.querySelectorAll('.spell-extension')].map(el => ({
             name: el.querySelector('.spell-extension-title').innerText,
             parentName: el.closest('tr').previousElementSibling?.querySelector('td')?.innerText,
@@ -166,6 +178,8 @@ try {
     assert.deepEqual(layout.languagePages, [1, 1], 'languages and scripts fit on personal page');
     assert.equal(layout.inventorySummary.length, 3, 'weight, carry capacity and equipment value have separate summary fields');
     assert(layout.inventorySummary.every(field => field.width >= 100 && field.height >= 28 && field.labelGap >= 4), 'inventory summary values have sufficient room and separation from labels');
+    assert.equal(layout.coinFields.length, 4);
+    assert(layout.coinFields.every(field => field.width >= 100 && field.height >= 28 && field.fontSize >= 14 && field.gap >= 4), 'coin quantities need roomy, separately labeled fields for multiple digits');
     assert.deepEqual(layout.extensions.map(extension => extension.parentName), ['Spell 1', 'Spell 16'], 'extensions remain directly with their source spell, including continuations');
     assert(layout.extensions.every(extension => extension.visible), 'extensions stay inside the printable area');
     assert.equal(layout.extensions[0].description, 'Range doubles.\nNo additional cost.', 'paragraphs stay separated in the measured DOM');
@@ -221,6 +235,13 @@ try {
     const bytes = Uint8Array.from(result.bytes);
     const pdf = await PDFDocument.load(bytes);
     const fields = pdf.getForm().getFields();
+    for (const [index, quantity] of ['123456', '98765', '4321', '0'].entries()) {
+      const coin = fields.find(field => field.getName().endsWith(`coin.${index}`));
+      assert.equal(coin?.getText(), quantity);
+      const widget = coin.acroField.getWidgets()[0];
+      assert(widget.getRectangle().width >= 75);
+      assert(Number(/ ([\d.]+) Tf/.exec(widget.getDefaultAppearance())[1]) >= 10, 'multi-digit coin quantities keep their normal font size');
+    }
     assert.equal(fields.find(field => field.getName().endsWith('spell.0.extension.0.description'))?.getText(), 'Range doubles.\nNo additional cost.');
     assert.equal(fields.find(field => field.getName().endsWith('spell.15.extension.0.description'))?.getText(), 'Additional protection.');
     assert.equal(fields.filter(field => /\.extension\.\d+\.name$/.test(field.getName())).length, 2);
