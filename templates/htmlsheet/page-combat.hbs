@@ -37,14 +37,3 @@
   <span>{{snapshot.derived.spi.abbrev}} <span class="pdf-field" data-pdf-field="combat.spi">{{snapshot.derived.spi.max}}</span></span>
   <span>{{snapshot.derived.tou.abbrev}} <span class="pdf-field" data-pdf-field="combat.tou">{{snapshot.derived.tou.max}}</span></span>
 </div>
-<div class="cond-block sheet-block">
-  <h2>{{labels.conditions}}</h2>
-  <div class="cond-grid">
-    {{#each snapshot.conditions}}
-    <div class="cond-row">
-      <span class="cond-name">{{name}}</span>
-      <span class="cond-level pdf-field" data-pdf-field="cond.{{id}}" data-pdf-dropdown="{{dropdown}}" data-pdf-align="center">{{label}}</span>
-    </div>
-    {{/each}}
-  </div>
-</div>

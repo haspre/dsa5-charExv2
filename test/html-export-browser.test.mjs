@@ -110,6 +110,7 @@ try {
           skillsVisible: rows.every(fitsPage),
           skillFooterVisible: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].every(fitsPage),
           skillFooterBounds: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].map(el => ({ name: el.dataset.pdfField, bottom: el.getBoundingClientRect().bottom, bodyBottom: el.closest('.sheet-page-body').getBoundingClientRect().bottom, scroll: el.closest('.sheet-page-body').scrollHeight, client: el.closest('.sheet-page-body').clientHeight })),
+          languagePages: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].map(el => [...host.querySelectorAll('.sheet-page')].indexOf(el.closest('.sheet-page')) + 1),
         };
       } finally { host.remove(); }
     }, { html, prefix });
@@ -122,6 +123,7 @@ try {
     assert(layout.skillsVisible, `${theme}: every talent row must remain visible`);
     assert(layout.skillFooterVisible, `${theme}: languages and scripts must stay inside the content area: ${JSON.stringify(layout.skillFooterBounds)}`);
     assert.equal(layout.skillFooterBounds.length, 2, 'short language/script blocks must not leave empty duplicate fields after moving');
+    assert.deepEqual(layout.languagePages, [1, 1], 'languages and scripts fit on personal page');
     if (process.argv.includes('--layout-only')) { console.log(`Layout ${theme}: passed`); continue; }
     const result = await page.evaluate(async ({ html, theme, prefix }) => {
       let resolveDownload;
@@ -141,7 +143,9 @@ try {
     const artifactPageIndex = pdf.getPages().findIndex(p => p.node.Annots()?.asArray()
       .some(ref => ref.toString() === artifactWidgetRef.toString())) + 1;
     assert(artifactPageIndex > 0, 'artifact field is attached to an actual PDF page');
-    for (const ending of ['derived.lp', 'derived.ae', 'derived.kp', 'magic.ae']) {
+    assert(!fields.some(field => /(?:^|\.)cond\./.test(field.getName())), 'condition table must not be exported');
+    assert(!fields.some(field => /magic\.(tradition|feature|guidevalue|ae)$/.test(field.getName())), 'redundant magic metadata row must not be exported');
+    for (const ending of ['derived.lp', 'derived.ae', 'derived.kp']) {
       const energy = fields.find(field => field.getName().endsWith(ending));
       assert(energy.acroField.getWidgets()[0].getRectangle().height >= 19, 'energy widgets retain their enlarged height in the PDF');
     }

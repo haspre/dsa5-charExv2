@@ -43,6 +43,11 @@ Tradition artifact abilities (DSA5 category `staff`) are exported separately,
 including their ranks. These sections also export for characters without spells
 or astral energy, and move to a continuation page when a spell table overflows.
 
+Languages and scripts appear below the personal details and traits on the first
+page when space allows. The condition table is omitted. The redundant metadata
+row above the spell table is also omitted, leaving more space for spells and
+tradition artifact abilities. Longer content still continues onto another page.
+
 The total weight uses DSA5's prepared `system.totalWeight` when available,
 including the system's equipment/container rules. For unprepared imports it falls
 back to equipment weight multiplied by quantity, including equipped gear and

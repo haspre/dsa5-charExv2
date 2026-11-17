@@ -79,3 +79,16 @@ https://github.com/Plushtoast/dsa5-foundryVTT/blob/foundry14/modules/data/item/s
 
 Die bestehende externe Sprachdatei-Abhängigkeit der Legacy-Gesamttests besteht
 weiter; die HTML-Tests können unabhängig davon ausgeführt werden.
+
+## Nachtrag: kompaktere Seitenaufteilung (0.10.5)
+
+Auf Nutzerwunsch entfällt die Zustandstabelle vollständig aus dem HTML-PDF.
+Sprachen und Schriften stehen unter den Angaben und Merkmalen auf der
+Personenseite. Die Kopfzeile mit Tradition, Merkmal, Leiteigenschaft und AsP vor
+der Zaubertabelle entfällt ebenfalls, damit Sonderfertigkeiten und
+Traditionsartefakte mehr Platz erhalten. Die automatische Aufteilung längerer
+Inhalte bleibt aktiv; es werden keine festen Seitenzahlen erzwungen.
+
+Die Rendering- und Browsertests prüfen die neue Zuordnung, das Fehlen der
+entfernten Formularfelder und die weiterhin vollständigen Artefaktfähigkeiten.
+Die vom Nutzer bereitgestellte Beispiel-PDF bleibt außerhalb des Repositorys.
