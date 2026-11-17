@@ -5,8 +5,16 @@ function pageOverflows(page) {
 }
 
 function contentBottom(page) {
-  const inner = page.querySelector('.sheet-page-inner');
-  return inner ? inner.getBoundingClientRect().bottom - 4 : page.getBoundingClientRect().bottom - 48;
+  const body = page.querySelector('.sheet-page-body');
+  return body ? body.getBoundingClientRect().bottom - 4 : page.getBoundingClientRect().bottom - 48;
+}
+
+function flowChildren(element) {
+  // display:contents wrappers have an empty rectangle. Inspect the actual
+  // blocks they contribute, otherwise overflowing languages/traits go unseen.
+  const view = element.ownerDocument.defaultView;
+  return [...element.children].flatMap(child => view.getComputedStyle(child).display === 'contents'
+    ? flowChildren(child) : [child]);
 }
 
 function cloneEmptyPage(page) {
@@ -53,17 +61,18 @@ function splitTable(page, table) {
   rows.slice(firstOverflow).forEach((row) => destBody.appendChild(row));
   nextBody.appendChild(tableClone);
 
-  let mover = table.parentElement;
-  while (mover && mover !== page.querySelector('.sheet-page-body') && mover.nextElementSibling) {
-    const siblings = [];
+  // Start at the table: spells and inventory tables are direct body children.
+  // Move their trailing notes/abilities as well as siblings of any wrapper.
+  let mover = table;
+  const pageBody = page.querySelector('.sheet-page-body');
+  while (mover && mover !== pageBody) {
     let cursor = mover.nextElementSibling;
     while (cursor) {
       const following = cursor.nextElementSibling;
-      siblings.push(cursor);
+      nextBody.appendChild(cursor);
       cursor = following;
     }
-    siblings.forEach((node) => nextBody.appendChild(node));
-    break;
+    mover = mover.parentElement;
   }
   return true;
 }
@@ -147,6 +156,9 @@ function splitProseSection(page, section) {
     nextBody.appendChild(sibling);
     sibling = following;
   }
+  // A whole paragraph may have moved. Leaving its empty minimum-height field
+  // behind would still overflow and create a second, clipped PDF widget.
+  if (!prose.textContent.trim()) section.remove();
   return true;
 }
 
@@ -154,7 +166,7 @@ function splitOverflow(page) {
   const body = page.querySelector('.sheet-page-body');
   if (!body) return false;
   const limit = contentBottom(page);
-  const children = [...body.children];
+  const children = flowChildren(body);
   let index = children.findIndex((node) => node.getBoundingClientRect().bottom > limit);
   if (index < 0) {
     const table = [...body.querySelectorAll('table[data-split]')].find((tbl) =>

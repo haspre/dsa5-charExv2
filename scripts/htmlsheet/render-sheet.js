@@ -94,6 +94,7 @@ export function buildSheetContext(snapshot, theme) {
       combatAbilities: joinList(snapshot.combatAbilities),
       clericalAbilities: joinList(snapshot.clericalAbilities),
       magicalAbilities: joinList(snapshot.magicalAbilities),
+      traditionArtifactAbilities: joinList(snapshot.traditionArtifactAbilities),
       blessings: joinList(snapshot.blessings),
       cantrips: joinList(snapshot.cantrips),
     },

@@ -51,6 +51,12 @@ export function equipmentCategories() {
   ]);
 }
 
+export function magicalAbilityCategories() {
+  return dsa5().dataModels?.Item?.specialability?.sortedSpecs?.magical ?? new Set([
+    'magical', 'magicalStyle', 'extMagical', 'homunculus', 'magicalsign', 'sikaryan',
+  ]);
+}
+
 export function socialStateChoices() {
   return globalThis.CONFIG?.Actor?.dataModels?.character?.schema?.getField?.('details.socialstate.value')?.choices ?? {
     0: '-',

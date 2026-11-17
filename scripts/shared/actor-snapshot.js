@@ -9,6 +9,7 @@ import {
   isShield,
   languageToken,
   literacyToken,
+  magicalAbilityCategories,
   moneyName,
   skillGroups,
   socialStateChoices,
@@ -187,7 +188,8 @@ export class ActorSnapshot {
       },
       spells: this.#spellLikes(['spell', 'ritual']),
       cantrips: this.filterType('magictrick').map((item) => item.name),
-      magicalAbilities: this.#specials('magical'),
+      magicalAbilities: this.#magicalAbilities(),
+      traditionArtifactAbilities: this.#specials('staff'),
       magical: {
         tradition: this.#traditionName('magical'),
         feature: this.leitwert(system.feature?.magical),
@@ -350,6 +352,12 @@ export class ActorSnapshot {
 
   #specials(category) {
     return this.#namedList('specialability', (item) => item.system?.category?.value === category);
+  }
+
+  #magicalAbilities() {
+    const categories = magicalAbilityCategories();
+    return this.#namedList('specialability', (item) => item.system?.category?.value !== 'staff'
+      && categories.has(item.system?.category?.value));
   }
 
   #traits() {

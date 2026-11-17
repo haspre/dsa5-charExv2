@@ -24,6 +24,8 @@ export function buildChromeLabels() {
     advantages: _loc('advantages'),
     disadvantages: _loc('disadvantages'),
     specialAbilities: _loc('specialAbilities'),
+    magicalAbilities: _loc('dsa5-charexv2.magicalAbilities'),
+    traditionArtifactAbilities: _loc('dsa5-charexv2.traditionArtifactAbilities'),
     fateAbilities: _loc('SpecCategory.fatePoints'),
     skills: _loc('skills'),
     sr: _loc('CHARAbbrev.FW'),

@@ -8,6 +8,9 @@
 {{/unless}}
 {{> htmlsheet-spell-table rows=rows labels=labels}}
 {{#if isLast}}
-<p class="trait-line sheet-block"><span class="trait-label">{{labels.cantrips}}</span> <span class="pdf-field" data-pdf-field="magic.cantrips" data-pdf-multiline="true">{{lists.cantrips}}</span></p>
-<p class="trait-line sheet-block"><span class="trait-label">{{labels.specialAbilities}}</span> <span class="pdf-field" data-pdf-field="magic.abilities" data-pdf-multiline="true">{{lists.magicalAbilities}}</span></p>
+<div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.cantrips}}</span><div class="trait-text pdf-field" data-pdf-field="magic.cantrips" data-pdf-multiline="true">{{lists.cantrips}}</div></div>
+<div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.magicalAbilities}}</span><div class="trait-text pdf-field" data-pdf-field="magic.abilities" data-pdf-multiline="true">{{lists.magicalAbilities}}</div></div>
+{{#if snapshot.traditionArtifactAbilities.length}}
+<div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.traditionArtifactAbilities}}</span><div class="trait-text pdf-field" data-pdf-field="magic.artifactAbilities" data-pdf-multiline="true">{{lists.traditionArtifactAbilities}}</div></div>
+{{/if}}
 {{/if}}

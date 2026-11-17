@@ -10,7 +10,7 @@ assert.deepStrictEqual(SHEET_PAGES.map((page) => page.id), [
 ]);
 assert(SHEET_PAGES.find((page) => page.id === 'inventory').required);
 assert.deepStrictEqual(SHEET_PAGES.find((page) => page.id === 'liturgy').skipWhenEmpty, ['liturgies', 'blessings', 'karma']);
-assert.deepStrictEqual(SHEET_PAGES.find((page) => page.id === 'spells').skipWhenEmpty, ['spells', 'cantrips', 'astral']);
+assert.deepStrictEqual(SHEET_PAGES.find((page) => page.id === 'spells').skipWhenEmpty, ['spells', 'cantrips', 'astral', 'magicalAbilities', 'traditionArtifactAbilities']);
 assert.deepStrictEqual(SHEET_PAGES.find((page) => page.id === 'notes').skipWhenEmpty, ['notes']);
 
 const fat = buildActorSnapshot(fatActor(), 'en', { localize });

@@ -21,4 +21,18 @@ actor.items.push({ name: 'Tradition of Hesinde', type: 'specialability', system:
 assert.equal(buildActorSnapshot(actor, 'en', { localize }).clerical.tradition, 'Tradition of Hesinde');
 actor.system.totalWeight = 12.5;
 assert.equal(buildActorSnapshot(actor, 'en', { localize }).weightTotal, 12.5, 'prefer system-prepared total (including container rules)');
+
+const mage = mundaneActor();
+mage.items = [
+  { name: 'Bindung des Stabes', type: 'specialability', system: { category: { value: 'staff' }, artifact: 'magierstab', step: { value: 1 } } },
+  { name: 'Flammenschwert', type: 'specialability', system: { category: { value: 'staff' }, artifact: 'magierstab', step: { value: 2 } } },
+  { name: 'Zauberstil', type: 'specialability', system: { category: { value: 'magicalStyle' }, step: { value: 1 } } },
+  { name: 'Erweiterte Magie', type: 'specialability', system: { category: { value: 'extMagical' }, step: { value: 2 } } },
+];
+const mageSnapshot = buildActorSnapshot(mage, 'de', { localize });
+assert.deepEqual(mageSnapshot.traditionArtifactAbilities, ['Bindung des Stabes I', 'Flammenschwert II']);
+assert.deepEqual(mageSnapshot.magicalAbilities, ['Zauberstil I', 'Erweiterte Magie II']);
+assert.equal(mageSnapshot.skip.spells, false, 'abilities must export even without spells or astral energy');
+const artifactOnly = buildActorSnapshot({ ...mage, items: mage.items.slice(0, 2) }, 'de', { localize });
+assert.equal(artifactOnly.skip.spells, false, 'tradition artifact abilities alone require their export page');
 console.log('html-data-regression.test.mjs passed');

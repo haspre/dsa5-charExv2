@@ -33,6 +33,16 @@ by question marks. If a character is unsupported or content cannot fit even at
 2 pt, the export reports an error instead of downloading an incomplete PDF.
 Editing values does not recalculate derived values or synchronize back to Foundry.
 
+Energy and derived-value fields have additional vertical space for the embedded
+font. Talent tables use uniform single-line rows and a wider encumbrance column
+so values such as `ja`, `evtl` and `nein` fit. Long talent names shrink within
+their row instead of changing its height.
+
+Magical special abilities include magical styles and advanced magical abilities.
+Tradition artifact abilities (DSA5 category `staff`) are exported separately,
+including their ranks. These sections also export for characters without spells
+or astral energy, and move to a continuation page when a spell table overflows.
+
 The total weight uses DSA5's prepared `system.totalWeight` when available,
 including the system's equipment/container rules. For unprepared imports it falls
 back to equipment weight multiplied by quantity, including equipped gear and

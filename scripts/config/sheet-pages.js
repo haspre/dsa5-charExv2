@@ -5,6 +5,6 @@ export const SHEET_PAGES = [
   { id: 'combat', template: 'page-combat.hbs', required: true },
   { id: 'inventory', template: 'page-inventory.hbs', required: true },
   { id: 'liturgy', template: 'page-liturgy.hbs', skipWhenEmpty: ['liturgies', 'blessings', 'karma'] },
-  { id: 'spells', template: 'page-spells.hbs', skipWhenEmpty: ['spells', 'cantrips', 'astral'] },
+  { id: 'spells', template: 'page-spells.hbs', skipWhenEmpty: ['spells', 'cantrips', 'astral', 'magicalAbilities', 'traditionArtifactAbilities'] },
   { id: 'notes', template: 'page-notes.hbs', skipWhenEmpty: ['notes'] },
 ];

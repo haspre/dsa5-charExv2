@@ -1,5 +1,7 @@
 {
   "dsa5-charexv2": {
+    "magicalAbilities": "Magische Sonderfertigkeiten",
+    "traditionArtifactAbilities": "Traditionsartefakte",
     "export": "Exportieren",
     "exporting": "Exportiere...",
     "exportType": "Exportart",

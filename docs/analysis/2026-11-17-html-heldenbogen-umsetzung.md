@@ -47,3 +47,35 @@ die neue Identität. Im alten Ulisses-Pfad wurden dafür lediglich Modulreferenz
 Die fachliche Exportlogik blieb unverändert. Das zusätzliche Identitätstestskript
 prüft Manifest, Laufzeitpfade und beide Sprachdateien. Die Installation erfolgt
 als eigenständiges Modul; die ursprüngliche Modulaktivierung wird nicht migriert.
+
+## Nachtrag: Feldhöhen, Talentzeilen und Traditionsartefakte (0.10.4)
+
+- Energiefelder und vergleichbare Werte erhalten mindestens 28 CSS-Pixel Höhe
+  statt der bisherigen etwa 18 Pixel; die Schriftgröße bleibt erhalten.
+- Talentzeilen bleiben bei 24 Pixeln Höhe. Lange Namen werden innerhalb der
+  einzeiligen Felder angepasst. Die BE-Spalte nutzt 16 statt 10 Prozent der
+  Tabellenbreite, damit `ja`, `evtl` und `nein` vollständig passen.
+- Magische Sonderfertigkeiten verwenden die Kategoriengruppe des DSA5-Systems
+  mit einem Fallback für magische Stile und erweiterte Fertigkeiten.
+- Sonderfertigkeiten der Traditionsartefakte werden aus Kategorie `staff` samt
+  Stufe in einem eigenen editierbaren Abschnitt ausgegeben. Sie werden auch ohne
+  Zauber oder AsP exportiert und nicht zusätzlich in der allgemeinen Magieliste
+  dupliziert.
+- Beim Aufteilen einer Tabelle werden nachfolgende Abschnitte mitgenommen.
+  Zuvor blieben Zaubertricks und Sonderfertigkeiten hinter direkt im Seitenkörper
+  liegenden Tabellen auf der überlaufenden Ursprungsseite stehen.
+- Die Umbruchgrenze berücksichtigt die tatsächliche Inhaltsfläche statt des
+  äußeren Seitencontainers. Sprach-/Schriften- und Merkmalsblöcke innerhalb von
+  `display: contents` werden einzeln geprüft. Vollständig verschobene Abschnitte
+  hinterlassen keine leeren, abgeschnittenen Formularfelder auf der alten Seite.
+- Browserregressionen prüfen 60 Talente einschließlich langer Namen und aller
+  drei BE-Werte sowie 16 Zauber mit langen Wirkungen. Zusätzlich werden die
+  tatsächlichen PDF-Widgets und die Artefaktfähigkeiten nach erneutem Einlesen
+  geprüft. Der Browsertest erzeugt Vorschaubilder der Personen-, Talent- und
+  Artefaktseiten.
+
+Referenz für Kategorie `staff` und die magischen Kategorien:
+https://github.com/Plushtoast/dsa5-foundryVTT/blob/foundry14/modules/data/item/specialability.js
+
+Die bestehende externe Sprachdatei-Abhängigkeit der Legacy-Gesamttests besteht
+weiter; die HTML-Tests können unabhängig davon ausgeführt werden.

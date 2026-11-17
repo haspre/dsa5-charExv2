@@ -197,8 +197,15 @@
 #dsa5-htmlsheet .talent-group .col-name { width: 34%; }
 #dsa5-htmlsheet .talent-group .col-check { width: 28%; }
 #dsa5-htmlsheet .talent-group .col-sr { width: 10%; }
-#dsa5-htmlsheet .talent-group .col-enc { width: 10%; }
-#dsa5-htmlsheet .talent-group .col-notes { width: 18%; }
+#dsa5-htmlsheet .talent-group .col-enc { width: 16%; }
+#dsa5-htmlsheet .talent-group .col-notes { width: 12%; }
+
+#dsa5-htmlsheet .talent-group tbody td {
+  height: 24px;
+  line-height: 18px;
+  padding: 2px 4px;
+  white-space: nowrap;
+}
 
 #dsa5-htmlsheet .sheet-table tr {
   break-inside: avoid;
@@ -422,6 +429,8 @@
 #dsa5-htmlsheet .magic-meta b {
   display: block;
   font-size: 14px;
+  min-height: 28px;
+  line-height: 28px;
   color: var(--sheet-text);
 }
 
