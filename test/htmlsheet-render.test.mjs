@@ -65,6 +65,9 @@ assert(!html.includes('data-pdf-field="cond.'), 'conditions are not part of the 
 assert(!html.includes('data-pdf-field="magic.tradition"'), 'redundant magic metadata row is omitted');
 assert(!html.includes('data-pdf-field="magic.guidevalue"'));
 assert(!html.includes('data-pdf-field="magic.ae"'), 'astral energy already appears on personal page');
+for (const key of ['mov', 'lp', 'dodge', 'ini', 'spi', 'tou']) {
+  assert(!html.includes(`data-pdf-field="combat.${key}"`), 'redundant combat summary is omitted');
+}
 const personalPage = html.split('data-page="personal"')[1].split('</section>')[0];
 const skillsPage = html.split('data-page="skills"')[1].split('</section>')[0];
 assert(personalPage.includes('data-pdf-field="skills.languages"'), 'languages belong on the personal page');

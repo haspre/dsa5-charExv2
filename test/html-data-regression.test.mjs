@@ -35,4 +35,16 @@ assert.deepEqual(mageSnapshot.magicalAbilities, ['Zauberstil I', 'Erweiterte Mag
 assert.equal(mageSnapshot.skip.spells, false, 'abilities must export even without spells or astral energy');
 const artifactOnly = buildActorSnapshot({ ...mage, items: mage.items.slice(0, 2) }, 'de', { localize });
 assert.equal(artifactOnly.skip.spells, false, 'tradition artifact abilities alone require their export page');
+
+const runner = mundaneActor();
+for (const [speed, expected] of [
+  [{ initial: 8, modifier: 0, value: 0 }, 8],
+  [{ initial: 8, modifier: -2, gearmodifier: 1, value: 99 }, 7],
+  [{ initial: 8, modifier: 0, value: 0, max: 10 }, 10],
+  [{ initial: 8, modifier: 0, value: 0, max: 0 }, 0],
+]) {
+  runner.system.status.speed = speed;
+  assert.equal(buildActorSnapshot(runner, 'de', { localize }).derived.mov.value, expected,
+    'GS uses prepared speed.max or base speed plus modifiers, never the raw speed.value placeholder');
+}
 console.log('html-data-regression.test.mjs passed');

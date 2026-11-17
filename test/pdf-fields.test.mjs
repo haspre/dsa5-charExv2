@@ -43,6 +43,25 @@ assert.strictEqual(fields[0].x, 11);
 assert.strictEqual(fields[0].y, 21);
 assert.strictEqual(fields[0].width, 34);
 assert.strictEqual(fields[0].height, 16);
+
+const style = {
+  fontSize: '12px', fontWeight: '400', textAlign: 'right',
+  borderLeftWidth: '1px', borderRightWidth: '1px', borderTopWidth: '1px', borderBottomWidth: '1px',
+  paddingLeft: '5px', paddingRight: '7px', paddingTop: '3px', paddingBottom: '3px',
+};
+const tableCell = {
+  tagName: 'TD', innerText: 'Wert',
+  ownerDocument: { defaultView: { getComputedStyle: () => style } },
+  getAttribute: name => name === 'data-pdf-field' ? 'item.0.name' : null,
+  getBoundingClientRect: () => ({ left: 100, top: 50, width: 200, height: 24 }),
+};
+const cellField = collectPdfFields({
+  getBoundingClientRect: () => ({ left: 0, top: 0 }), querySelectorAll: () => [tableCell],
+})[0];
+const pdfPaddingPx = 794 / (210 / 25.4 * 72);
+assert(Math.abs(cellField.x + pdfPaddingPx - 106) < 0.01, 'PDF text begins at CSS content left, after border and padding');
+assert(Math.abs(cellField.x + cellField.width - pdfPaddingPx - 292) < 0.01, 'PDF text ends at CSS content right');
+assert.equal(cellField.align, 'right', 'CSS cell alignment is preserved');
 assert.strictEqual(fieldFontSize({ multiline: true }, { height: 80 }), 8);
 assert.ok(fieldFontSize({ multiline: true }, { height: 12 }) <= 8);
 assert.ok(fieldFontSize({ multiline: true }, { height: 12 }) <= 8);

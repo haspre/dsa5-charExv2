@@ -88,18 +88,40 @@ async function ensureHtml2Pdf() {
   return globalThis.html2pdf;
 }
 
+function prepareSheetLayout(sheet) {
+  sheet.style.left = '0';
+  sheet.style.position = 'relative';
+  for (const el of sheet.querySelectorAll('*')) {
+    el.style.letterSpacing = '0';
+    el.style.textShadow = 'none';
+    el.style.webkitTextStroke = '0';
+    el.style.textTransform = 'none';
+    el.style.filter = 'none';
+  }
+}
+
+function freezeTableColumns(page) {
+  for (const table of page.querySelectorAll('table')) {
+    const cells = [...(table.tHead?.rows[0]?.cells || [])];
+    if (!cells.length || cells.some(cell => cell.colSpan !== 1)) continue;
+    const widths = cells.map(cell => cell.getBoundingClientRect().width);
+    const width = table.getBoundingClientRect().width;
+    const columns = page.ownerDocument.createElement('colgroup');
+    for (const measured of widths) {
+      const column = page.ownerDocument.createElement('col');
+      column.style.width = `${measured}px`; columns.appendChild(column);
+    }
+    table.querySelector(':scope > colgroup')?.remove();
+    table.prepend(columns);
+    table.style.width = `${width}px`;
+    table.style.tableLayout = 'fixed';
+  }
+}
+
 function prepareClonedSheets(doc) {
   for (const sheet of doc.querySelectorAll('#dsa5-htmlsheet')) {
     sheet.classList.add('pdf-capture');
-    sheet.style.left = '0';
-    sheet.style.position = 'relative';
-    for (const el of sheet.querySelectorAll('*')) {
-      el.style.letterSpacing = '0';
-      el.style.textShadow = 'none';
-      el.style.webkitTextStroke = '0';
-      el.style.textTransform = 'none';
-      el.style.filter = 'none';
-    }
+    prepareSheetLayout(sheet);
     hidePdfFieldText(sheet);
   }
 }
@@ -180,6 +202,9 @@ export async function htmlToPdf(html, filename, options = {}) {
     await embedImages(root, options.lang || options.snapshot?.lang || 'en');
     await waitForImages(root);
     await document.fonts?.ready;
+    // Typography changes affect auto table widths. Apply them before pagination
+    // and widget measurement, not only later in html2canvas's clone.
+    prepareSheetLayout(root);
     paginateSheet(root);
 
     const pages = [...root.querySelectorAll('.sheet-page')];
@@ -200,6 +225,7 @@ export async function htmlToPdf(html, filename, options = {}) {
     for (const page of pages) {
       const restore = isolatePage(root, page);
       try {
+        freezeTableColumns(page);
         const fields = collectPdfFields(page);
         const canvas = await canvasFromWorker(html2pdf, root, theme);
         const jpg = await canvasToJpg(canvas);

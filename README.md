@@ -48,6 +48,12 @@ page when space allows. The condition table is omitted. The redundant metadata
 row above the spell table is also omitted, leaving more space for spells and
 tradition artifact abilities. Longer content still continues onto another page.
 
+Table columns are measured and fixed before capturing the page background;
+editable values use the same cell content area, padding and alignment. The
+combat page omits the repeated GS/LeP/AW/INI/SK/ZK summary. GS on the personal
+page uses DSA5's prepared `speed.max`; unprepared JSON falls back to base speed
+plus modifiers instead of the `speed.value` placeholder.
+
 The total weight uses DSA5's prepared `system.totalWeight` when available,
 including the system's equipment/container rules. For unprepared imports it falls
 back to equipment weight multiplied by quantity, including equipped gear and

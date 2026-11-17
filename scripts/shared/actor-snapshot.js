@@ -278,9 +278,11 @@ export class ActorSnapshot {
     const chars = system.characteristics || {};
     const speed = status.speed || {};
     const initiative = status.initiative || {};
-    const speedValue = speed.value != null
-      ? num(speed.value)
-      : num(speed.initial) + num(speed.modifier) + num(speed.gearmodifier);
+    // speed.value in exported actor JSON is not the prepared movement speed.
+    // Preserve a real prepared zero (e.g. immobilized); otherwise use the base.
+    const speedValue = speed.max != null && speed.max !== '' && Number.isFinite(Number(speed.max))
+      ? num(speed.max)
+      : Math.max(0, num(speed.initial) + num(speed.modifier) + num(speed.gearmodifier));
     const iniValue = Math.round((characteristicTotal(chars.mu) + characteristicTotal(chars.ge)) / 2)
       + num(initiative.modifier) + num(initiative.gearmodifier);
 

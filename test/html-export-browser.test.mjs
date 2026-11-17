@@ -129,8 +129,47 @@ try {
       let resolveDownload;
       const download = new Promise(resolve => { resolveDownload = resolve; });
       window.saveAs = async blob => resolveDownload(Array.from(new Uint8Array(await blob.arrayBuffer())));
+      if (!window.html2pdf) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = prefix + 'lib/html2pdf.bundle.min.js';
+          script.onload = resolve; script.onerror = reject; document.head.appendChild(script);
+        });
+      }
+      const originalHtml2Pdf = window.html2pdf;
+      const cellGeometry = element => {
+        const page = element.matches('.sheet-page') ? element : element.querySelector('.sheet-page');
+        const origin = page.getBoundingClientRect();
+        return [...page.querySelectorAll('td[data-pdf-field]')].map(cell => {
+          const r = cell.getBoundingClientRect();
+          return { name: cell.dataset.pdfField, left: r.left - origin.left, top: r.top - origin.top, width: r.width, height: r.height };
+        });
+      };
+      // Compare the actual html2canvas clone with the live layout from which
+      // the PDF widget positions were measured, not a separate mock renderer.
+      window.html2pdf = () => {
+        const expected = cellGeometry(document.querySelector('#dsa5-htmlsheet-host #dsa5-htmlsheet'));
+        const worker = originalHtml2Pdf();
+        const set = worker.set;
+        worker.set = function(options) {
+          const onclone = options.html2canvas.onclone;
+          options.html2canvas.onclone = doc => {
+            onclone(doc);
+            const actual = cellGeometry(doc.querySelector('.html2pdf__container .sheet-page'));
+            for (let index = 0; index < expected.length; index++) {
+              const a = actual[index], e = expected[index];
+              if (!a || a.name !== e.name || ['left', 'top', 'width', 'height'].some(key => Math.abs(a[key] - e[key]) > 0.5)) {
+                throw new Error(`Capture table geometry differs: ${JSON.stringify({ expected: e, actual: a })}`);
+              }
+            }
+          };
+          return set.call(this, options);
+        };
+        return worker;
+      };
       const { htmlToPdf } = await import(`${prefix}scripts/htmlsheet/html-to-pdf.js`);
-      await htmlToPdf(html, 'smoke.pdf', { theme, lang: 'en' });
+      try { await htmlToPdf(html, 'smoke.pdf', { theme, lang: 'en' }); }
+      finally { window.html2pdf = originalHtml2Pdf; }
       return { bytes: await download, leftover: document.querySelector('#dsa5-htmlsheet-host') !== null };
     }, { html, theme, prefix });
     assert.equal(result.leftover, false);

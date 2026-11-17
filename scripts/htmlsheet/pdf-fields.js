@@ -14,16 +14,27 @@ export function collectPdfFields(pageEl) {
   return [...pageEl.querySelectorAll('[data-pdf-field]')].map((el) => {
     const r = el.getBoundingClientRect();
     const style = el.ownerDocument?.defaultView?.getComputedStyle(el);
+    let left = FIELD_INSET_PX, right = FIELD_INSET_PX, top = FIELD_INSET_PX, bottom = FIELD_INSET_PX;
+    if (style && ['TD', 'TH'].includes(el.tagName)) {
+      const px = key => parseFloat(style[key]) || 0;
+      // pdf-lib paints text with 1 pt of internal padding. Expand the widget
+      // back into CSS padding so the painted text matches the cell content box.
+      const paddingPx = PAGE.widthPx / (PAGE.widthMm / 25.4 * 72);
+      left = px('borderLeftWidth') + px('paddingLeft') - paddingPx;
+      right = px('borderRightWidth') + px('paddingRight') - paddingPx;
+      top = px('borderTopWidth') + px('paddingTop') - paddingPx;
+      bottom = px('borderBottomWidth') + px('paddingBottom') - paddingPx;
+    }
     return {
       name: el.getAttribute('data-pdf-field') || 'field',
       value: (el.innerText ?? el.textContent ?? '').replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim().normalize('NFC'),
       multiline: el.getAttribute('data-pdf-multiline') === 'true',
-      align: el.getAttribute('data-pdf-align') || 'left',
+      align: el.getAttribute('data-pdf-align') || style?.textAlign || 'left',
       dropdown: (el.getAttribute('data-pdf-dropdown') || '').split(',').map(s => s.trim()).filter(Boolean),
       fontSize: style ? parseFloat(style.fontSize) * 72 / 96 : undefined,
       bold: style ? Number(style.fontWeight) >= 600 || style.fontWeight === 'bold' : false,
-      x: r.left - pageRect.left + FIELD_INSET_PX, y: r.top - pageRect.top + FIELD_INSET_PX,
-      width: r.width - FIELD_INSET_PX * 2, height: r.height - FIELD_INSET_PX * 2,
+      x: r.left - pageRect.left + left, y: r.top - pageRect.top + top,
+      width: r.width - left - right, height: r.height - top - bottom,
     };
   });
 }

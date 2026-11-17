@@ -92,3 +92,25 @@ Inhalte bleibt aktiv; es werden keine festen Seitenzahlen erzwungen.
 Die Rendering- und Browsertests prüfen die neue Zuordnung, das Fehlen der
 entfernten Formularfelder und die weiterhin vollständigen Artefaktfähigkeiten.
 Die vom Nutzer bereitgestellte Beispiel-PDF bleibt außerhalb des Repositorys.
+
+## Nachtrag: Tabellenpositionen und Geschwindigkeit (0.10.6)
+
+Beim Vergleich des tatsächlichen html2canvas-Klons mit dem gemessenen
+Original-Layout wurde eine Abweichung von etwa 13 Pixeln in der ersten
+Kampftabellenspalte reproduziert. Die Normalisierung von Groß-/Kleinschreibung
+und Schriftabständen findet nun bereits vor Seitenaufteilung und Feldmessung
+statt. Für die Aufnahme werden die gemessenen Spaltenbreiten zusätzlich per
+`colgroup` fixiert. PDF-Widgets berücksichtigen Rahmen, CSS-Innenabstände und das
+interne 1-pt-Textpadding von pdf-lib; die CSS-Ausrichtung wird übernommen.
+
+Die wiederholten Werte GS/LeP/AW/INI/SK/ZK entfallen auf der Kampfseite. GS auf
+der Personenseite nutzt den vorbereiteten DSA5-Wert `status.speed.max`, auch wenn
+dieser legitim 0 ist. Für unvorbereitete Daten wird `initial + modifier +
+gearmodifier` verwendet. Im bereitgestellten JSON ist `initial = 8` und
+`value = 0`; letzteres ist nicht die exportierbare vorbereitete Geschwindigkeit.
+Der Export liefert damit 8.
+
+Regressionstests prüfen die Zellgeometrie während der tatsächlichen
+html2canvas-Aufnahme, PDF-Textpositionen relativ zu CSS-Innenabständen und
+Geschwindigkeitsdaten einschließlich einer vorbereiteten Geschwindigkeit 0.
+Die persönlichen JSON-/PDF-Beispieldaten verbleiben außerhalb des Repositorys.
