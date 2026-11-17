@@ -1,5 +1,9 @@
 {
   "dsa5-charexv2": {
+    "unitPrice": "Stückpreis (ST)",
+    "inventoryValue": "Ausrüstungswert (ST)",
+    "knownInventoryValue": "Bekannter Ausrüstungswert (ST)",
+    "missingPrices": "Gegenstände ohne Preisangabe",
     "magicalAbilities": "Magische Sonderfertigkeiten",
     "traditionArtifactAbilities": "Traditionsartefakte",
     "export": "Exportieren",

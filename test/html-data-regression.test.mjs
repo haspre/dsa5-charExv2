@@ -47,4 +47,31 @@ for (const [speed, expected] of [
   assert.equal(buildActorSnapshot(runner, 'de', { localize }).derived.mov.value, expected,
     'GS uses prepared speed.max or base speed plus modifiers, never the raw speed.value placeholder');
 }
+
+const trader = mundaneActor();
+trader.items = [
+  { name: 'Verband', type: 'equipment', system: { quantity: { value: 10 }, price: { value: 1.25 }, weight: { value: 0.5 } } },
+  { name: 'Gratis', type: 'equipment', system: { quantity: { value: 1 }, price: { value: 0 } } },
+  { name: 'Papier', type: 'equipment', system: { quantity: { value: 2 }, price: { value: '0.1' } } },
+  { name: 'Unbekannt', type: 'equipment', system: { quantity: { value: 1 } } },
+  { name: 'Schwert', type: 'meleeweapon', system: { worn: { value: true }, quantity: { value: 1 }, price: { value: 200 } } },
+  { name: 'Silverthaler', type: 'money', system: { quantity: { value: 99 }, price: { value: 1 } } },
+];
+const valuation = buildActorSnapshot(trader, 'de', { localize, moneyHasWeight: true });
+assert.equal(valuation.inventory[0].price, 1.25, 'price is a unit price in silverthalers');
+assert.equal(valuation.inventory[0].priceText, '1,25');
+assert.equal(valuation.inventory[1].priceText, '0', 'free is different from missing');
+assert.equal(valuation.inventory[3].priceText, '—');
+assert.equal(valuation.inventoryValue.total, 12.7, 'total multiplies quantities, excludes money and equipment displayed only in combat tables');
+assert.equal(valuation.inventoryValue.displayTotal, '12,7');
+assert.equal(valuation.inventoryValue.hasPrices, true);
+assert.equal(valuation.inventoryValue.complete, false);
+assert.equal(valuation.inventoryValue.missingPrices, 1);
+assert.equal(buildActorSnapshot(trader, 'en', { localize }).inventory[0].priceText, '1.25');
+const noPrices = buildActorSnapshot({ ...trader, items: [{ name: 'Item', type: 'equipment', system: {} }] }, 'de', { localize });
+assert.equal(noPrices.inventoryValue.hasPrices, false, 'do not offer a misleading zero valuation when no prices exist');
+const fractional = buildActorSnapshot({ ...trader, items: [
+  { name: 'Kleinigkeit', type: 'equipment', system: { quantity: { value: 3 }, price: { value: 0.1 } } },
+] }, 'de', { localize });
+assert.equal(fractional.inventoryValue.total, 0.3, 'currency rounding must not expose floating point noise');
 console.log('html-data-regression.test.mjs passed');

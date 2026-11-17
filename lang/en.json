@@ -1,5 +1,9 @@
 {
   "dsa5-charexv2": {
+    "unitPrice": "Unit price (ST)",
+    "inventoryValue": "Equipment value (ST)",
+    "knownInventoryValue": "Known equipment value (ST)",
+    "missingPrices": "Items without a price",
     "magicalAbilities": "Magical special abilities",
     "traditionArtifactAbilities": "Tradition artifacts",
     "export": "Export",

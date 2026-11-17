@@ -45,6 +45,14 @@ function roundWeight(value) {
   return Math.round(num(value) * 100) / 100;
 }
 
+function unitPrice(item) {
+  const raw = item.system?.price?.value;
+  if (item.type === 'money' || raw == null || typeof raw === 'boolean'
+    || (typeof raw === 'string' && !raw.trim())) return null;
+  const price = Number(raw);
+  return Number.isFinite(price) && price >= 0 ? price : null;
+}
+
 function hasProse(value) {
   return text(value)
     .replace(/<[^>]+>/g, ' ')
@@ -106,6 +114,7 @@ export class ActorSnapshot {
   constructor(actor, lang, options = {}) {
     this.actor = actor;
     this.lang = CharacterUtils.resolveLang(lang);
+    this.numberFormat = new Intl.NumberFormat(this.lang === 'de' ? 'de-DE' : 'en-US', { maximumFractionDigits: 4 });
     this.localizeFn = typeof options.localize === 'function'
       ? options.localize
       : (key) => globalThis.game?.i18n?.localize?.(key) ?? key;
@@ -208,6 +217,16 @@ export class ActorSnapshot {
     snapshot.armor = this.#armor();
     snapshot.shields = this.#shields();
     snapshot.inventory = this.#inventory();
+    const pricedItems = snapshot.inventory.filter(row => row.type !== 'money');
+    const missingPrices = pricedItems.filter(row => row.price == null && row.quantity > 0).length;
+    const total = Math.round((pricedItems.reduce((sum, row) => sum + (row.price ?? 0) * row.quantity, 0) + Number.EPSILON) * 100) / 100;
+    snapshot.inventoryValue = {
+      hasPrices: pricedItems.some(row => row.price != null),
+      total,
+      displayTotal: this.numberFormat.format(total),
+      missingPrices,
+      complete: missingPrices === 0,
+    };
     // The system total includes equipped gear and container/weight rules.
     // Plain JSON imports may not have prepared data yet: sum all equipment then.
     const preparedWeight = system.totalWeight;
@@ -613,8 +632,9 @@ export class ActorSnapshot {
     if (this.moneyHasWeight) bag.push(...this.filterType('money'));
 
     return bag.map((item) => {
-      const quantity = num(item.system?.quantity?.value, 1);
+      const quantity = Math.max(0, num(item.system?.quantity?.value, 1));
       const unitWeight = num(item.system?.weight?.value);
+      const price = unitPrice(item);
       const parent = byId.get(item.system?.parent_id);
       return {
         name: item.name,
@@ -622,6 +642,8 @@ export class ActorSnapshot {
         quantity,
         weight: unitWeight,
         weightTotal: roundWeight(unitWeight * quantity),
+        price,
+        priceText: price == null ? '—' : this.numberFormat.format(price),
         location: text(parent?.name),
         type: item.type,
       };

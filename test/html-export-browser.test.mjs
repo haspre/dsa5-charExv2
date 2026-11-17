@@ -50,6 +50,10 @@ for (const [group, count] of [['body', 14], ['social', 9], ['nature', 7], ['know
   }
 }
 actor.items.push({ name: 'Flammenschwert', type: 'specialability', system: { category: { value: 'staff' }, artifact: 'magierstab', step: { value: 2 } } });
+const pricedEquipment = actor.items.filter(item => item.type === 'equipment');
+pricedEquipment[0].system.price = { value: 1.25 };
+pricedEquipment[1].system.price = { value: 0 };
+pricedEquipment[2].system.price = { value: 0.1 };
 for (const spell of actor.items.filter(item => item.type === 'spell')) {
   spell.system.effect.value = 'Lange Zauberwirkung mit mehreren Zeilen. '.repeat(12);
 }
@@ -111,6 +115,11 @@ try {
           skillFooterVisible: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].every(fitsPage),
           skillFooterBounds: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].map(el => ({ name: el.dataset.pdfField, bottom: el.getBoundingClientRect().bottom, bodyBottom: el.closest('.sheet-page-body').getBoundingClientRect().bottom, scroll: el.closest('.sheet-page-body').scrollHeight, client: el.closest('.sheet-page-body').clientHeight })),
           languagePages: [...host.querySelectorAll('[data-pdf-field="skills.languages"], [data-pdf-field="skills.scripts"]')].map(el => [...host.querySelectorAll('.sheet-page')].indexOf(el.closest('.sheet-page')) + 1),
+          inventorySummary: [...host.querySelectorAll('.inventory-summary-item')].map(el => {
+            const label = el.querySelector('.inventory-summary-label').getBoundingClientRect();
+            const value = el.querySelector('[data-pdf-field]').getBoundingClientRect();
+            return { width: value.width, height: value.height, labelGap: value.top - label.bottom };
+          }),
         };
       } finally { host.remove(); }
     }, { html, prefix });
@@ -124,6 +133,8 @@ try {
     assert(layout.skillFooterVisible, `${theme}: languages and scripts must stay inside the content area: ${JSON.stringify(layout.skillFooterBounds)}`);
     assert.equal(layout.skillFooterBounds.length, 2, 'short language/script blocks must not leave empty duplicate fields after moving');
     assert.deepEqual(layout.languagePages, [1, 1], 'languages and scripts fit on personal page');
+    assert.equal(layout.inventorySummary.length, 3, 'weight, carry capacity and equipment value have separate summary fields');
+    assert(layout.inventorySummary.every(field => field.width >= 100 && field.height >= 28 && field.labelGap >= 4), 'inventory summary values have sufficient room and separation from labels');
     if (process.argv.includes('--layout-only')) { console.log(`Layout ${theme}: passed`); continue; }
     const result = await page.evaluate(async ({ html, theme, prefix }) => {
       let resolveDownload;
@@ -176,6 +187,14 @@ try {
     const bytes = Uint8Array.from(result.bytes);
     const pdf = await PDFDocument.load(bytes);
     const fields = pdf.getForm().getFields();
+    assert.equal(fields.find(field => field.getName().endsWith('item.0.price'))?.getText(), '1.25');
+    assert.equal(fields.find(field => field.getName().endsWith('item.1.price'))?.getText(), '0');
+    assert.equal(fields.find(field => field.getName().endsWith('item.3.price'))?.getText(), '—');
+    assert.equal(fields.find(field => field.getName().endsWith('inventory.value'))?.getText(), '3.85');
+    const summaryValue = fields.find(field => field.getName().endsWith('inventory.value'));
+    const summaryRef = pdf.context.getObjectRef(summaryValue.acroField.getWidgets()[0].dict);
+    const inventoryPageIndex = pdf.getPages().findIndex(p => p.node.Annots()?.asArray().some(ref => ref.toString() === summaryRef.toString())) + 1;
+    assert(summaryValue.acroField.getWidgets()[0].getRectangle().width >= 75, 'summary values retain sufficient width in the final PDF');
     const artifactField = fields.find(field => field.getName().endsWith('magic.artifactAbilities'));
     assert.equal(artifactField?.getText(), 'Flammenschwert II');
     const artifactWidgetRef = pdf.context.getObjectRef(artifactField.acroField.getWidgets()[0].dict);
@@ -213,7 +232,7 @@ try {
       await fs.mkdir(out, { recursive: true });
       await fs.writeFile(path.join(out, `html-heldenbogen-${theme}.pdf`), bytes);
     }
-    const editedBytes = await page.evaluate(async ({ bytes, prefix, artifactPageIndex }) => {
+    const editedBytes = await page.evaluate(async ({ bytes, prefix, artifactPageIndex, inventoryPageIndex }) => {
         const pdfjs = await import(`${prefix}node_modules/pdfjs-dist/build/pdf.mjs`);
         pdfjs.GlobalWorkerOptions.workerSrc = `${prefix}node_modules/pdfjs-dist/build/pdf.worker.mjs`;
         const loading = pdfjs.getDocument({ data: new Uint8Array(bytes) });
@@ -225,7 +244,7 @@ try {
         canvas.width = viewport.width; canvas.height = viewport.height;
         document.body.appendChild(canvas);
         await first.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-        for (const [id, number] of [['skills-preview', 2], ['artifact-preview', artifactPageIndex]]) {
+        for (const [id, number] of [['skills-preview', 2], ['artifact-preview', artifactPageIndex], ['inventory-preview', inventoryPageIndex]]) {
           document.getElementById(id)?.remove();
           const sourcePage = await doc.getPage(number);
           const view = sourcePage.getViewport({ scale: 1.5 });
@@ -239,13 +258,14 @@ try {
         const edited = Array.from(await doc.saveDocument());
         await loading.destroy();
         return edited;
-      }, { bytes: result.bytes, prefix, artifactPageIndex });
+      }, { bytes: result.bytes, prefix, artifactPageIndex, inventoryPageIndex });
     const editedPdf = await PDFDocument.load(Uint8Array.from(editedBytes));
     assert.equal(editedPdf.getForm().getTextField('personal.name').getText(), 'Änderung Ω im Viewer');
     if (out) {
       await page.locator('canvas').first().screenshot({ path: path.join(out, `html-heldenbogen-${theme}.png`) });
       await page.locator('#skills-preview').screenshot({ path: path.join(out, `talente-${theme}.png`) });
       await page.locator('#artifact-preview').screenshot({ path: path.join(out, `artefakte-${theme}.png`) });
+      await page.locator('#inventory-preview').screenshot({ path: path.join(out, `inventar-${theme}.png`) });
     }
     console.log(`HTML export ${theme}: ${pdf.getPageCount()} pages, ${fields.length} editable fields, ${bytes.length} bytes`);
   }

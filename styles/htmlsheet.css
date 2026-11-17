@@ -566,6 +566,51 @@
   margin-right: 14px;
 }
 
+#dsa5-htmlsheet .inventory-table { table-layout: fixed; }
+#dsa5-htmlsheet .inventory-table .col-name { width: 68%; }
+#dsa5-htmlsheet .inventory-table .col-quantity { width: 14%; text-align: center; }
+#dsa5-htmlsheet .inventory-table .col-weight { width: 18%; text-align: center; }
+#dsa5-htmlsheet .inventory-table.has-prices .col-name { width: 52%; }
+#dsa5-htmlsheet .inventory-table.has-prices .col-quantity { width: 12%; }
+#dsa5-htmlsheet .inventory-table.has-prices .col-weight { width: 16%; }
+#dsa5-htmlsheet .inventory-table.has-prices .col-price { width: 20%; text-align: right; }
+
+#dsa5-htmlsheet .inventory-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+#dsa5-htmlsheet .inventory-summary-item {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--sheet-rule);
+  background: var(--sheet-fill);
+}
+
+#dsa5-htmlsheet .inventory-summary-label {
+  display: block;
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--sheet-muted);
+  margin-bottom: 6px;
+}
+
+#dsa5-htmlsheet .inventory-summary-value {
+  display: block;
+  min-height: 28px;
+  line-height: 28px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#dsa5-htmlsheet .inventory-value-note {
+  margin: 5px 0 0;
+  font-size: 10px;
+  color: var(--sheet-muted);
+}
+
 #dsa5-htmlsheet .notes-section {
   width: 100%;
 }

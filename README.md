@@ -54,6 +54,15 @@ combat page omits the repeated GS/LeP/AW/INI/SK/ZK summary. GS on the personal
 page uses DSA5's prepared `speed.max`; unprepared JSON falls back to base speed
 plus modifiers instead of the `speed.value` placeholder.
 
+When item prices are available, the inventory adds an editable unit-price column
+in silverthalers (ST). The summary shows the quantity-weighted value of the items
+listed in that table, excluding money and equipped items shown only in combat
+tables. Missing prices appear as `—`; a subtotal is labeled as the known value
+with a missing-price count. Zero is treated as a valid price. Prices follow the
+document language's number format. The valuation is calculated at export time.
+Weight, carry capacity and value each have a separate, generously sized summary
+field below their label. Without prices, only weight and carry capacity appear.
+
 The total weight uses DSA5's prepared `system.totalWeight` when available,
 including the system's equipment/container rules. For unprepared imports it falls
 back to equipment weight multiplied by quantity, including equipped gear and

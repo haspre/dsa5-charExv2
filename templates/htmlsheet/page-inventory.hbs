@@ -6,27 +6,46 @@
   {{/each}}
 </div>
 {{/unless}}
-<table class="sheet-table" data-split>
+<table class="sheet-table inventory-table {{#if snapshot.inventoryValue.hasPrices}}has-prices{{/if}}" data-split>
   <thead>
     <tr>
       <th class="col-name">{{labels.name}}</th>
-      <th>{{labels.quantity}}</th>
-      <th>{{labels.weight}}</th>
+      <th class="col-quantity">{{labels.quantity}}</th>
+      <th class="col-weight">{{labels.weight}}</th>
+      {{#if snapshot.inventoryValue.hasPrices}}<th class="col-price">{{labels.unitPrice}}</th>{{/if}}
     </tr>
   </thead>
   <tbody>
     {{#each rows}}
     <tr>
       <td class="pdf-field" data-pdf-field="item.{{@index}}.name">{{displayName}}</td>
-      <td class="pdf-field" data-pdf-field="item.{{@index}}.quantity" data-pdf-align="center">{{quantity}}</td>
-      <td class="pdf-field" data-pdf-field="item.{{@index}}.weight" data-pdf-align="center">{{weightTotal}}</td>
+      <td class="col-quantity pdf-field" data-pdf-field="item.{{@index}}.quantity" data-pdf-align="center">{{quantity}}</td>
+      <td class="col-weight pdf-field" data-pdf-field="item.{{@index}}.weight" data-pdf-align="center">{{weightTotal}}</td>
+      {{#if ../snapshot.inventoryValue.hasPrices}}<td class="col-price pdf-field" data-pdf-field="item.{{@index}}.price" data-pdf-align="right">{{priceText}}</td>{{/if}}
     </tr>
     {{/each}}
   </tbody>
 </table>
 {{#if isLast}}
-<p class="weight-footer sheet-block">
-  {{labels.weight}} <span class="pdf-field" data-pdf-field="inventory.weight">{{snapshot.weightTotal}}</span>
-  /&nbsp;{{labels.carrycapacity}} <span class="pdf-field" data-pdf-field="inventory.carry">{{snapshot.carryCapacity}}</span>
-</p>
+<div class="inventory-footer sheet-block">
+  <div class="inventory-summary">
+    <div class="inventory-summary-item">
+      <span class="inventory-summary-label">{{labels.weight}}</span>
+      <b class="inventory-summary-value pdf-field" data-pdf-field="inventory.weight">{{snapshot.weightTotal}}</b>
+    </div>
+    <div class="inventory-summary-item">
+      <span class="inventory-summary-label">{{labels.carrycapacity}}</span>
+      <b class="inventory-summary-value pdf-field" data-pdf-field="inventory.carry">{{snapshot.carryCapacity}}</b>
+    </div>
+    {{#if snapshot.inventoryValue.hasPrices}}
+    <div class="inventory-summary-item">
+      <span class="inventory-summary-label">{{#if snapshot.inventoryValue.complete}}{{labels.inventoryValue}}{{else}}{{labels.knownInventoryValue}}{{/if}}</span>
+      <b class="inventory-summary-value pdf-field" data-pdf-field="inventory.value">{{snapshot.inventoryValue.displayTotal}}</b>
+    </div>
+    {{/if}}
+  </div>
+  {{#if snapshot.inventoryValue.hasPrices}}{{#unless snapshot.inventoryValue.complete}}
+  <p class="inventory-value-note">{{labels.missingPrices}}: {{snapshot.inventoryValue.missingPrices}}</p>
+  {{/unless}}{{/if}}
+</div>
 {{/if}}

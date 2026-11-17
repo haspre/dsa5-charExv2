@@ -114,3 +114,28 @@ Regressionstests prüfen die Zellgeometrie während der tatsächlichen
 html2canvas-Aufnahme, PDF-Textpositionen relativ zu CSS-Innenabständen und
 Geschwindigkeitsdaten einschließlich einer vorbereiteten Geschwindigkeit 0.
 Die persönlichen JSON-/PDF-Beispieldaten verbleiben außerhalb des Repositorys.
+
+## Nachtrag: Inventarpreise und Summenübersicht (0.10.7)
+
+`system.price.value` enthält den Stückpreis in Silbertalern, passend zu den
+Münzwerten Silber = 1 und Dukaten = 10 im bereitgestellten JSON. Bei vorhandenen
+Preisen erscheint eine zusätzliche editierbare Stückpreisspalte. Der Gesamtwert
+summiert Stückpreis mal Anzahl für sämtliche gelisteten Inventareinträge, auch
+über mehrere Seiten hinweg. Münzen und ausschließlich in Kampftabellen
+aufgeführte Ausrüstung werden nicht in diesen Tabellenwert eingerechnet.
+
+Fehlende, leere oder ungültige Preise werden als `—` angezeigt und nicht als 0
+interpretiert. Bei unvollständigen Preisen werden bekannter Wert und Anzahl der
+Einträge ohne Preis ausgewiesen. 0 bleibt ein gültiger Preis. Ohne jegliche
+Preisangaben entfallen Preisspalte und Bewertung. Die Summe wird auf Kreuzer
+(0,01 ST) gerundet; die Anzeige nutzt deutsche bzw. englische Zahlenformatierung.
+
+Gewicht, Tragkraft und Preiswert stehen in getrennten Übersichtsboxen mit
+mindestens 28 Pixel hohen Wertefeldern und 6 Pixel Abstand zur Beschriftung.
+Diese Boxen können zusammen auf eine Folgeseite wechseln, statt abgeschnitten
+zu werden. Die Felder bleiben editierbar; die Summe wird beim Export berechnet.
+
+Tests decken Mengen, Nullpreise, fehlende Preise, Währungsrundung und die
+Trennung vom Geldbeutel ab. Browserprüfungen kontrollieren Mindestabmessungen,
+Abstände, Feldwerte und die unveränderten Spaltenpositionen im tatsächlichen
+Capture-Klon.
