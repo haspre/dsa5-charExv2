@@ -2,7 +2,7 @@
     <h3>{{actor}}</h3>
 
     <div class="form-group">
-        <label>{{localize "dsa5-char2pdfv2.exportType"}}</label>
+        <label>{{localize "dsa5-charexv2.exportType"}}</label>
         <select name="exportType">
             {{#each exportTypes}}
             <option value="{{id}}" {{#if selected}}selected{{/if}}>{{localize label}}</option>
@@ -11,7 +11,7 @@
     </div>
 
     <div class="form-group" data-html-option>
-        <label>{{localize "dsa5-char2pdfv2.theme"}}</label>
+        <label>{{localize "dsa5-charexv2.theme"}}</label>
         <select name="theme">
             {{#each themes}}
             <option value="{{id}}" {{#if selected}}selected{{/if}}>{{localize label}}</option>
@@ -20,11 +20,11 @@
     </div>
 
     <div class="form-group" data-html-option>
-        <label>{{localize "dsa5-char2pdfv2.includeBiography"}}</label>
+        <label>{{localize "dsa5-charexv2.includeBiography"}}</label>
         <input type="checkbox" name="includeBiography">
     </div>
 
     <div class="flexrow">
-        <button type="button" data-action="btn_Export">{{localize "dsa5-char2pdfv2.export"}}</button>
+        <button type="button" data-action="btn_Export">{{localize "dsa5-charexv2.export"}}</button>
     </div>
 </div>

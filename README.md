@@ -75,6 +75,11 @@ https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json
 ### Completion of the installation
 As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` for your World, then enable the `DSA5 - CharEx v2` module.
 
+The module ID and installation directory are `dsa5-charexv2`
+(`Data/modules/dsa5-charexv2/`). This fork is a separate module from
+`dsa5-char2pdfv2`; after installing it, enable CharEx v2 in your world and disable
+the original module to avoid duplicate export entries.
+
 ## Where to find the button for export ? 
 
 ![Where to find the export button](Where_to_find_the_Button.png)

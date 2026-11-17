@@ -20,7 +20,7 @@ export class DSACHAR2PDF {
   }
 
   moduleLoc(key, data) {
-    return game.i18n.format(`dsa5-char2pdfv2.${key}`, data || {});
+    return game.i18n.format(`dsa5-charexv2.${key}`, data || {});
   }
 
   setTextField(fieldName, value, fontSize = undefined) {
@@ -31,7 +31,7 @@ export class DSACHAR2PDF {
     try {
       field.setFontSize(size);
     } catch (error) {
-      console.warn(`dsa5-char2pdfv2 | Could not set font size for ${fieldName}`, error);
+      console.warn(`dsa5-charexv2 | Could not set font size for ${fieldName}`, error);
     }
   }
 
@@ -39,7 +39,7 @@ export class DSACHAR2PDF {
     try {
       this.setTextField(fieldName, value, fontSize);
     } catch (error) {
-      console.warn(`dsa5-char2pdfv2 | Missing PDF field ${fieldName}`, error);
+      console.warn(`dsa5-charexv2 | Missing PDF field ${fieldName}`, error);
     }
   }
 
@@ -430,7 +430,7 @@ export class DSACHAR2PDF {
       const pdfDoc = await PDFDocument.load(formPdfBytes);
       this.form = pdfDoc.getForm();
 
-      const moduleVersion = game.modules.get('dsa5-char2pdfv2')?.version || '';
+      const moduleVersion = game.modules.get('dsa5-charexv2')?.version || '';
 
       const today = CharacterUtils.getCurrentDate();
 
@@ -557,7 +557,7 @@ export class DSACHAR2PDF {
       this.setTextField('Held_SF_Karm', clericalSA.map(item => item.name).join(', '));
 
       pdfDoc.setTitle(`DSA5-${this.entity.name}.pdf created on ${today}`);
-      pdfDoc.setSubject('https://github.com/Plushtoast/dsa5-char2pdfv2');
+      pdfDoc.setSubject('https://github.com/haspre/dsa5-charExv2');
       pdfDoc.setProducer(`DSA5 - char2PDF ${moduleVersion}`);
       pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
       pdfDoc.setCreationDate(new Date());

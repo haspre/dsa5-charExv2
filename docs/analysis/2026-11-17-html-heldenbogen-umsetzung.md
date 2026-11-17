@@ -37,3 +37,13 @@ Die neuen Browserprüfungen benötigen einen lokal installierten Playwright-Chro
 ## Verbleibende Abnahme
 
 Ein realer Foundry-Export mit Nutzerdaten sowie manuelle Tests in Acrobat Reader und macOS Vorschau wurden nicht durchgeführt. Komplexe Kampfwertberechnungen, eine generelle Überarbeitung des Paginators und stabile Item-IDs für alle Listen sind weitere Schritte aus der ursprünglichen Analyse; sie sind durch diese Änderung nicht als erledigt erklärt.
+
+## Nachtrag: eigene Modul-ID
+
+Auf Nutzerwunsch wurde die Modul-ID auf `dsa5-charexv2` umgestellt. Manifest,
+Laufzeitkonstante, Modulpfade, Übersetzungs-Namespace, Dialog und Tests verwenden
+die neue Identität. Im alten Ulisses-Pfad wurden dafür lediglich Modulreferenzen,
+Übersetzungsschlüssel, Protokollpräfixe und die Projekt-Metadaten angepasst.
+Die fachliche Exportlogik blieb unverändert. Das zusätzliche Identitätstestskript
+prüft Manifest, Laufzeitpfade und beide Sprachdateien. Die Installation erfolgt
+als eigenständiges Modul; die ursprüngliche Modulaktivierung wird nicht migriert.

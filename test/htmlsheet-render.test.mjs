@@ -14,7 +14,7 @@ import { buildChromeLabels } from '../scripts/htmlsheet/labels.js';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function fileFor(modulePath) {
-  return path.join(root, modulePath.replace(/^modules\/dsa5-char2pdfv2\//, ''));
+  return path.join(root, modulePath.replace(/^modules\/dsa5-charexv2\//, ''));
 }
 
 for (const [alias, modulePath] of Object.entries(HTML_SHEET_PARTIALS)) {

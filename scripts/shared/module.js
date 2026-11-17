@@ -1,5 +1,5 @@
 export class dsa5char2pdf {
-  static ID = 'dsa5-char2pdfv2';
+  static ID = 'dsa5-charexv2';
 
   static TEMPLATES = {
     PDF_Template: `modules/${this.ID}/templates/template.pdf`,

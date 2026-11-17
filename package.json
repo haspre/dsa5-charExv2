@@ -3,7 +3,7 @@
     "test": "node test/locale-map.test.js && node test/pdf-labels.test.js && node test/templates.test.js && node test/actor-snapshot.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs && node test/capture-memory.test.mjs",
     "build:templates": "node modifytemplate.js",
     "build:fonts": "node scripts/build-fontkit.cjs",
-    "test:html": "node test/locale-map.test.js && node test/actor-snapshot.test.mjs && node test/html-data-regression.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs && node test/pdf-form-regression.test.mjs && node test/capture-memory.test.mjs",
+    "test:html": "node test/module-identity.test.mjs && node test/locale-map.test.js && node test/actor-snapshot.test.mjs && node test/html-data-regression.test.mjs && node test/sheet-pages.test.mjs && node test/htmlsheet-render.test.mjs && node test/pdf-fields.test.mjs && node test/pdf-form-regression.test.mjs && node test/capture-memory.test.mjs",
     "test:browser": "node test/html-export-browser.test.mjs"
   },
   "dependencies": {

@@ -42,7 +42,7 @@ const I18N = {
   Hair_color: 'Hair color',
   probe: 'Check',
   'CHARAbbrev.FW': 'SR',
-  'dsa5-char2pdfv2.encAbbrev': 'BE',
+  'dsa5-charexv2.encAbbrev': 'BE',
   'Money-D': 'Ducat',
   'Money-S': 'Silverthaler',
   'Money-H': 'Haler',

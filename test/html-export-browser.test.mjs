@@ -14,7 +14,7 @@ import { fatActor, localize } from './actor-fixtures.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
 const { PDFDocument, PDFName } = require('../lib/pdf-lib.js');
-const prefix = '/modules/dsa5-char2pdfv2/';
+const prefix = '/modules/dsa5-charexv2/';
 const moduleLabels = JSON.parse(await fs.readFile(path.join(root, 'lang/en.json'), 'utf8'));
 globalThis._loc = key => {
   const moduleValue = key.split('.').reduce((value, part) => value?.[part], moduleLabels);

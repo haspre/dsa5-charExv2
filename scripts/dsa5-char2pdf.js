@@ -61,12 +61,12 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
     data.exportType = DEFAULT_EXPORT_TYPE;
     data.theme = DEFAULT_THEME;
     data.exportTypes = [
-      { id: EXPORT_TYPES.HTMLSHEET, label: 'dsa5-char2pdfv2.exportHtmlsheet', selected: true },
-      { id: EXPORT_TYPES.ULISSES, label: 'dsa5-char2pdfv2.exportUlisses', selected: false },
+      { id: EXPORT_TYPES.HTMLSHEET, label: 'dsa5-charexv2.exportHtmlsheet', selected: true },
+      { id: EXPORT_TYPES.ULISSES, label: 'dsa5-charexv2.exportUlisses', selected: false },
     ];
     data.themes = [
-      { id: THEMES.TABLE, label: 'dsa5-char2pdfv2.themeTable', selected: true },
-      { id: THEMES.PRINT, label: 'dsa5-char2pdfv2.themePrint', selected: false },
+      { id: THEMES.TABLE, label: 'dsa5-charexv2.themeTable', selected: true },
+      { id: THEMES.PRINT, label: 'dsa5-charexv2.themePrint', selected: false },
     ];
     return data;
   }
@@ -87,7 +87,7 @@ class ExportPreferences extends foundry.applications.api.HandlebarsApplicationMi
   static async _btn_Export(ev, target) {
     const original = target.innerHTML;
     target.disabled = true;
-    target.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${_loc('dsa5-char2pdfv2.exporting')}`;
+    target.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${_loc('dsa5-charexv2.exporting')}`;
     const exportType = this.element.querySelector('[name="exportType"]')?.value || DEFAULT_EXPORT_TYPE;
     const theme = this.element.querySelector('[name="theme"]')?.value || DEFAULT_THEME;
     const includeBiography = this.element.querySelector('[name="includeBiography"]')?.checked === true;
