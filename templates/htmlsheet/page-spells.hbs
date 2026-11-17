@@ -1,6 +1,6 @@
-{{> htmlsheet-spell-table rows=rows labels=labels}}
+{{#if rows.length}}{{> htmlsheet-spell-table rows=rows labels=labels}}{{/if}}
 {{#if isLast}}
-<div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.cantrips}}</span><div class="trait-text pdf-field" data-pdf-field="magic.cantrips" data-pdf-multiline="true">{{lists.cantrips}}</div></div>
+<div class="trait-line sheet-block" data-split-prose data-page-break-before><span class="trait-label">{{labels.cantrips}}</span><div class="trait-text pdf-field" data-pdf-field="magic.cantrips" data-pdf-multiline="true">{{lists.cantrips}}</div></div>
 <div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.magicalAbilities}}</span><div class="trait-text pdf-field" data-pdf-field="magic.abilities" data-pdf-multiline="true">{{lists.magicalAbilities}}</div></div>
 {{#if snapshot.traditionArtifactAbilities.length}}
 <div class="trait-line sheet-block" data-split-prose><span class="trait-label">{{labels.traditionArtifactAbilities}}</span><div class="trait-text pdf-field" data-pdf-field="magic.artifactAbilities" data-pdf-multiline="true">{{lists.traditionArtifactAbilities}}</div></div>

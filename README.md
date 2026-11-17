@@ -49,6 +49,8 @@ Languages and scripts appear below the personal details and traits on the first
 page when space allows. The condition table is omitted. The redundant metadata
 row above the spell table is also omitted, leaving more space for spells and
 tradition artifact abilities. Longer content still continues onto another page.
+After the spell table, cantrips and the following magical abilities start on a
+new page. Characters without spells do not receive an empty preceding page.
 
 Owned spell extensions appear directly below their source spell, with editable
 names and descriptions. Assignment follows the extension's source name and

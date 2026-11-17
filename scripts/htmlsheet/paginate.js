@@ -199,6 +199,20 @@ function splitOverflow(page) {
 }
 
 export function paginateSheet(root) {
+  for (const marker of root.querySelectorAll('[data-page-break-before]')) {
+    const page = marker.closest('.sheet-page');
+    const body = page?.querySelector('.sheet-page-body');
+    if (!body || marker.parentElement !== body || marker === body.firstElementChild) continue;
+    const next = cloneEmptyPage(page);
+    page.after(next);
+    const destination = next.querySelector('.sheet-page-body');
+    let current = marker;
+    while (current) {
+      const following = current.nextElementSibling;
+      destination.appendChild(current);
+      current = following;
+    }
+  }
   const initial = [...root.querySelectorAll('.sheet-page')];
   for (const page of initial) {
     let current = page;

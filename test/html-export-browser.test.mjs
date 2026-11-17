@@ -85,6 +85,27 @@ try {
   const page = await browser.newPage();
   await page.goto(`http://127.0.0.1:${server.address().port}`);
   for (const theme of ['table', 'print']) {
+    for (const withSpell of [true, false]) {
+      const compact = { ...snapshot, spells: withSpell ? [{ ...snapshot.spells[0], effect: 'Short effect.', extensions: [] }] : [] };
+      const compactHtml = await renderSheet(compact, theme, { render: (alias, data) => templates[alias](data) });
+      const boundary = await page.evaluate(async ({ html, prefix }) => {
+        const host = document.createElement('div'); host.id = 'dsa5-htmlsheet-host'; host.innerHTML = html; document.body.appendChild(host);
+        try {
+          await document.fonts.ready;
+          const { paginateSheet } = await import(`${prefix}scripts/htmlsheet/paginate.js`);
+          const root = host.querySelector('#dsa5-htmlsheet');
+          paginateSheet(root);
+          const before = root.querySelectorAll('.sheet-page').length;
+          paginateSheet(root);
+          const pages = [...root.querySelectorAll('.sheet-page')];
+          const pageOf = selector => pages.indexOf(root.querySelector(selector)?.closest('.sheet-page'));
+          return { spell: pageOf('.sheet-page[data-page="spells"] [data-pdf-field="spell.0.name"]'), cantrips: pageOf('[data-pdf-field="magic.cantrips"]'), magicPages: root.querySelectorAll('.sheet-page[data-page="spells"]').length, stable: before === pages.length };
+        } finally { host.remove(); }
+      }, { html: compactHtml, prefix });
+      assert(boundary.stable, 'repeated pagination must not insert additional blank pages');
+      if (withSpell) assert(boundary.cantrips > boundary.spell, `${theme}: cantrips start on a new page even when they would fit beside the spell`);
+      else assert.equal(boundary.magicPages, 1, 'abilities without spells must not gain an empty preceding page');
+    }
     const html = await renderSheet(snapshot, theme, { render: (alias, data) => templates[alias](data) });
     const layout = await page.evaluate(async ({ html, prefix }) => {
       const host = document.createElement('div');
