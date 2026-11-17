@@ -19,6 +19,44 @@ Two export modes:
 
 Language follows `game.i18n.lang`. There is no language dropdown.  
 
+### HTML sheet PDF fields
+
+The HTML sheet exports text and numbers as editable AcroForm fields. The
+character name is shared between the page headers and personal data, so editing
+one occurrence updates the same logical field. Regular and bold DejaVu Sans fonts
+are bundled and embedded in full for subsequent editing in PDF viewers.
+
+Field typography follows the HTML sheet. Long values automatically shrink to fit
+the available width; multiline fields also account for wrapped line height.
+Short values keep their normal size. Text is never silently truncated or replaced
+by question marks. If a character is unsupported or content cannot fit even at
+2 pt, the export reports an error instead of downloading an incomplete PDF.
+Editing values does not recalculate derived values or synchronize back to Foundry.
+
+The total weight uses DSA5's prepared `system.totalWeight` when available,
+including the system's equipment/container rules. For unprepared imports it falls
+back to equipment weight multiplied by quantity, including equipped gear and
+money when the world's money-weight setting is enabled.
+
+Development checks for the HTML exporter:
+
+```sh
+npm ci
+npm run test:html
+npx playwright install chromium
+npm run test:browser
+```
+
+Set `CHAREX_ARTIFACT_DIR` to retain example PDFs and PDF.js-rendered preview images
+from the browser test. The browser test uses fixture actors and a local server;
+it does not replace validation in a live Foundry world or manual Acrobat/Preview
+tests. The original `npm test` also includes legacy Ulisses checks which currently
+require external DSA5 language files in `../foundry14/lang`.
+
+`npm run build:fonts` regenerates the bundled fontkit module from the locked npm
+dependency. Font licenses are in `assets/fonts/LICENSE.txt`; fontkit and pako
+notices accompany their bundle in `lib/`.
+
 ## Installation
 ### Automatic Installation
 See https://foundryvtt.wiki/en/basics/Modules. 

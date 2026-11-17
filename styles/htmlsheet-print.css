@@ -24,6 +24,10 @@
   padding: 28px 32px 24px;
 }
 
+#dsa5-htmlsheet[data-theme="print"] .sheet-page-header {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 #dsa5-htmlsheet[data-theme="print"] .sheet-table,
 #dsa5-htmlsheet[data-theme="print"] .sheet-table th,
 #dsa5-htmlsheet[data-theme="print"] .sheet-table td,
@@ -58,4 +62,14 @@
   #dsa5-htmlsheet .sheet-page {
     page-break-after: always;
   }
+}
+
+/* Fine rules preserve orientation without the parchment's heavy frames. */
+#dsa5-htmlsheet[data-theme="print"] .sheet-table th,
+#dsa5-htmlsheet[data-theme="print"] .sheet-table td {
+  border-bottom: 0.5px solid #b8b8b8;
+}
+
+#dsa5-htmlsheet[data-theme="print"] .sheet-table thead th {
+  border-bottom: 1px solid #555;
 }

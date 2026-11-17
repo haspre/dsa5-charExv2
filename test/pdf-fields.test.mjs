@@ -4,6 +4,7 @@ import { collectPdfFields, fieldFontSize, finishPdfForm, hidePdfFieldText, htmlR
 
 const require = createRequire(import.meta.url);
 const { PDFDocument, StandardFonts, rgb } = require('../lib/pdf-lib.js');
+globalThis.PDFLib = require('../lib/pdf-lib.js');
 
 const pagePx = { width: 794, height: 1123 };
 const pagePt = { width: 595.28, height: 841.89 };
@@ -80,6 +81,9 @@ const weird = form.createTextField('s2.notes');
 weird.addToPage(pdfPage, { ...widget, x: 10, y: 10, width: 120, height: 16 });
 weird.setFontSize(9);
 weird.setText('Weg \u2603');
+assert.throws(() => finishPdfForm(pdf, font), /Unsupported characters/);
+assert.strictEqual(weird.getText(), 'Weg \u2603', 'unsupported input must never be silently altered');
+weird.setText('Weg Ä');
 finishPdfForm(pdf, font);
 
 function appearanceText(field) {
@@ -89,8 +93,7 @@ function appearanceText(field) {
 }
 
 assert(appearanceText(name).includes('416C72696B2074686520426F6C64'), 'edited value must be in the field appearance');
-assert.strictEqual(weird.getText(), 'Weg ?');
-assert(appearanceText(weird).includes('576567203F'));
-assert(!appearanceText(weird).includes('2603'));
+assert.strictEqual(weird.getText(), 'Weg Ä');
+assert(appearanceText(weird).includes('57656720C4'));
 
 console.log('pdf-fields.test.mjs passed');

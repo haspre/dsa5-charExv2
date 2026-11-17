@@ -5,6 +5,7 @@ import { savePdfBlob } from '../shared/download.js';
 import { imageUrls } from './render-sheet.js';
 import { paginateSheet } from './paginate.js';
 import { addPdfFields, collectPdfFields, finishPdfForm, hidePdfFieldText } from './pdf-fields.js';
+import { embedSheetFonts } from './pdf-fonts.js';
 
 const CAPTURE_ROOTS = '#dsa5-htmlsheet-host, .html2pdf__overlay';
 
@@ -165,7 +166,7 @@ export function pdfFilename(actorName) {
 
 export async function htmlToPdf(html, filename, options = {}) {
   const html2pdf = await ensureHtml2Pdf();
-  const { PDFDocument, StandardFonts } = globalThis.PDFLib || {};
+  const { PDFDocument } = globalThis.PDFLib || {};
   if (typeof PDFDocument?.create !== 'function') throw new Error('pdf-lib is not loaded');
 
   const host = document.createElement('div');
@@ -178,6 +179,7 @@ export async function htmlToPdf(html, filename, options = {}) {
   try {
     await embedImages(root, options.lang || options.snapshot?.lang || 'en');
     await waitForImages(root);
+    await document.fonts?.ready;
     paginateSheet(root);
 
     const pages = [...root.querySelectorAll('.sheet-page')];
@@ -188,7 +190,7 @@ export async function htmlToPdf(html, filename, options = {}) {
     root.style.overflow = 'hidden';
 
     const pdf = await PDFDocument.create();
-    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    const { font, boldFont } = await embedSheetFonts(pdf);
     const width = PAGE.widthMm / 25.4 * 72;
     const height = PAGE.heightMm / 25.4 * 72;
     const pagePx = { width: PAGE.widthPx, height: PAGE.heightPx };
@@ -204,7 +206,7 @@ export async function htmlToPdf(html, filename, options = {}) {
         const image = await pdf.embedJpg(jpg);
         const pdfPage = pdf.addPage([width, height]);
         pdfPage.drawImage(image, { x: 0, y: 0, width, height });
-        serial = addPdfFields(pdf, pdfPage, fields, { theme, pagePx, pagePt, font, serial });
+        serial = addPdfFields(pdf, pdfPage, fields, { theme, pagePx, pagePt, font, boldFont, serial });
       } finally {
         restore();
       }

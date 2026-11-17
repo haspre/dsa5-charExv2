@@ -206,9 +206,14 @@ export class ActorSnapshot {
     snapshot.armor = this.#armor();
     snapshot.shields = this.#shields();
     snapshot.inventory = this.#inventory();
-    snapshot.weightTotal = roundWeight(
-      snapshot.inventory.reduce((sum, row) => sum + num(row.weightTotal), 0),
-    );
+    // The system total includes equipped gear and container/weight rules.
+    // Plain JSON imports may not have prepared data yet: sum all equipment then.
+    const preparedWeight = system.totalWeight;
+    snapshot.weightTotal = preparedWeight != null && preparedWeight !== '' && Number.isFinite(Number(preparedWeight))
+      ? roundWeight(preparedWeight)
+      : roundWeight(this.items.filter((item) => equipmentCategories().has(item.type)
+        || (this.moneyHasWeight && item.type === 'money'))
+        .reduce((sum, item) => sum + num(item.system?.weight?.value) * num(item.system?.quantity?.value, 1), 0));
 
     snapshot.skip = {};
     for (const page of SHEET_PAGES) {
@@ -338,7 +343,9 @@ export class ActorSnapshot {
       item.system?.isTradition &&
       item.system?.category?.value === kind,
     );
-    return matches.length === 1 ? text(matches[0].name) : '';
+    if (matches.length) return matches.map((item) => text(item.name)).join(', ');
+    const legacy = this.actor?.system?.tradition?.[kind];
+    return typeof legacy === 'string' ? text(legacy) : '';
   }
 
   #specials(category) {
