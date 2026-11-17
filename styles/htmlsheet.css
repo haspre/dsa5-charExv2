@@ -225,7 +225,8 @@
   width: 16%;
 }
 
-#dsa5-htmlsheet .combat-techniques .col-sr {
+#dsa5-htmlsheet .combat-techniques .col-sr,
+#dsa5-htmlsheet .sheet-table-spells .col-sr {
   width: 10%;
   min-width: 52px;
 }

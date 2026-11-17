@@ -69,6 +69,8 @@ for (const spell of actor.items.filter(item => item.type === 'spell')) {
 }
 const snapshot = buildActorSnapshot(actor, 'en', { localize });
 snapshot.combatTechniques.forEach((technique, index) => { technique.sr = index % 2 ? 18 : 10; });
+const spellRows = snapshot.pages.flatMap(id => id === 'liturgy' ? snapshot.liturgies : id === 'spells' ? snapshot.spells : []);
+spellRows.forEach((spell, index) => { spell.sr = index % 2 ? 18 : 10; });
 
 const mime = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf', '.webp': 'image/webp' };
 const server = http.createServer(async (req, res) => {
@@ -136,7 +138,7 @@ try {
         const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
         return {
           energyHeights: energy.map(el => el.getBoundingClientRect().height),
-          combatRatings: [...host.querySelectorAll('[data-pdf-field^="combat."][data-pdf-field$=".sr"]')].map(el => {
+          fwFields: [...host.querySelectorAll('[data-pdf-field^="combat."][data-pdf-field$=".sr"], [data-pdf-field^="spell."][data-pdf-field$=".sr"]')].map(el => {
             const style = getComputedStyle(el); ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
             return { width: el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight), textWidth: ctx.measureText(el.innerText).width };
           }),
@@ -172,8 +174,8 @@ try {
       } finally { host.remove(); }
     }, { html, prefix });
     assert(layout.energyHeights.every(height => height >= 28), `${theme}: energy fields need enough vertical space: ${layout.energyHeights}`);
-    assert(layout.combatRatings.length > 0);
-    assert(layout.combatRatings.every(field => field.width >= 40 && field.width >= field.textWidth + 4), `${theme}: combat FW fields need room for two digits and PDF padding: ${JSON.stringify(layout.combatRatings)}`);
+    assert.equal(layout.fwFields.length, snapshot.combatTechniques.length + spellRows.length);
+    assert(layout.fwFields.every(field => field.width >= 40 && field.width >= field.textWidth + 4), `${theme}: combat and spell FW fields need room for two digits and PDF padding: ${JSON.stringify(layout.fwFields)}`);
     assert(Math.max(...layout.rowHeights) - Math.min(...layout.rowHeights) < 0.5, `${theme}: talent rows must have equal height`);
     assert(layout.enc.some(row => row.text === 'nein'));
     assert(layout.enc.every(row => row.spare >= 0), `${theme}: BE values must fit without clipping`);
@@ -274,6 +276,14 @@ try {
       const widget = field.acroField.getWidgets()[0];
       assert(widget.getRectangle().width >= 30, 'combat FW widgets retain room for two digits');
       assert(Number(/ ([\d.]+) Tf/.exec(widget.getDefaultAppearance())[1]) >= 8, 'combat FW remains legible without excessive shrinking');
+    });
+    const spellRatings = fields.filter(field => /spell\.\d+\.sr$/.test(field.getName()));
+    assert.equal(spellRatings.length, spellRows.length);
+    spellRatings.forEach((field, index) => {
+      assert.equal(field.getText(), String(spellRows[index].sr));
+      const widget = field.acroField.getWidgets()[0];
+      assert(widget.getRectangle().width >= 30, 'spell FW widgets retain room for two digits');
+      assert(Number(/ ([\d.]+) Tf/.exec(widget.getDefaultAppearance())[1]) >= 8, 'spell FW remains legible without excessive shrinking');
     });
     assert(!fields.some(field => /magic\.(tradition|feature|guidevalue|ae)$/.test(field.getName())), 'redundant magic metadata row must not be exported');
     for (const ending of ['derived.lp', 'derived.ae', 'derived.kp']) {
