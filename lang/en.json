@@ -1,5 +1,6 @@
 {
   "dsa5-charexv2": {
+    "spellExtensions": "Extensions",
     "unitPrice": "Unit price (ST)",
     "inventoryValue": "Equipment value (ST)",
     "knownInventoryValue": "Known equipment value (ST)",

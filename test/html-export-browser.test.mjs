@@ -50,6 +50,10 @@ for (const [group, count] of [['body', 14], ['social', 9], ['nature', 7], ['know
   }
 }
 actor.items.push({ name: 'Flammenschwert', type: 'specialability', system: { category: { value: 'staff' }, artifact: 'magierstab', step: { value: 2 } } });
+actor.items.push(
+  { name: 'Spell 1 - Longer range', type: 'spellextension', system: { source: 'Spell 1', category: 'spell', description: { value: '<p>Range doubles.</p><p>No additional cost.</p>' } } },
+  { name: 'Spell 16 - Stronger', type: 'spellextension', system: { source: 'Spell 16', category: 'spell', description: { value: '<p>Additional protection.</p>' } } },
+);
 const pricedEquipment = actor.items.filter(item => item.type === 'equipment');
 pricedEquipment[0].system.price = { value: 1.25 };
 pricedEquipment[1].system.price = { value: 0 };
@@ -120,6 +124,12 @@ try {
             const value = el.querySelector('[data-pdf-field]').getBoundingClientRect();
             return { width: value.width, height: value.height, labelGap: value.top - label.bottom };
           }),
+          extensions: [...host.querySelectorAll('.spell-extension')].map(el => ({
+            name: el.querySelector('.spell-extension-title').innerText,
+            parentName: el.closest('tr').previousElementSibling?.querySelector('td')?.innerText,
+            description: el.querySelector('.spell-extension-description')?.innerText,
+            visible: fitsPage(el),
+          })),
         };
       } finally { host.remove(); }
     }, { html, prefix });
@@ -135,6 +145,9 @@ try {
     assert.deepEqual(layout.languagePages, [1, 1], 'languages and scripts fit on personal page');
     assert.equal(layout.inventorySummary.length, 3, 'weight, carry capacity and equipment value have separate summary fields');
     assert(layout.inventorySummary.every(field => field.width >= 100 && field.height >= 28 && field.labelGap >= 4), 'inventory summary values have sufficient room and separation from labels');
+    assert.deepEqual(layout.extensions.map(extension => extension.parentName), ['Spell 1', 'Spell 16'], 'extensions remain directly with their source spell, including continuations');
+    assert(layout.extensions.every(extension => extension.visible), 'extensions stay inside the printable area');
+    assert.equal(layout.extensions[0].description, 'Range doubles.\nNo additional cost.', 'paragraphs stay separated in the measured DOM');
     if (process.argv.includes('--layout-only')) { console.log(`Layout ${theme}: passed`); continue; }
     const result = await page.evaluate(async ({ html, theme, prefix }) => {
       let resolveDownload;
@@ -187,6 +200,9 @@ try {
     const bytes = Uint8Array.from(result.bytes);
     const pdf = await PDFDocument.load(bytes);
     const fields = pdf.getForm().getFields();
+    assert.equal(fields.find(field => field.getName().endsWith('spell.0.extension.0.description'))?.getText(), 'Range doubles.\nNo additional cost.');
+    assert.equal(fields.find(field => field.getName().endsWith('spell.15.extension.0.description'))?.getText(), 'Additional protection.');
+    assert.equal(fields.filter(field => /\.extension\.\d+\.name$/.test(field.getName())).length, 2);
     assert.equal(fields.find(field => field.getName().endsWith('item.0.price'))?.getText(), '1.25');
     assert.equal(fields.find(field => field.getName().endsWith('item.1.price'))?.getText(), '0');
     assert.equal(fields.find(field => field.getName().endsWith('item.3.price'))?.getText(), '—');

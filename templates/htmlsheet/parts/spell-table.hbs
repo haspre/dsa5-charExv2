@@ -11,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    {{#each rows}}
+    {{#each rows as |spell spellIndex|}}
     <tr>
       <td class="pdf-field" data-pdf-field="spell.{{@index}}.name">{{name}}</td>
       <td class="pdf-field" data-pdf-field="spell.{{@index}}.check">{{check}}</td>
@@ -22,7 +22,20 @@
       <td class="col-ic pdf-field" data-pdf-field="spell.{{@index}}.ic" data-pdf-align="center">{{ic}}</td>
     </tr>
     <tr class="spell-effect">
-      <td colspan="7" class="pdf-field" data-pdf-field="spell.{{@index}}.effect" data-pdf-multiline="true">{{effect}}</td>
+      <td colspan="7">
+        <div class="spell-effect-text pdf-field" data-pdf-field="spell.{{@index}}.effect" data-pdf-multiline="true">{{effect}}</div>
+        {{#if extensions.length}}
+        <div class="spell-extensions">
+          <div class="spell-extension-heading">{{../labels.spellExtensions}}</div>
+          {{#each extensions}}
+          <div class="spell-extension">
+            <b class="spell-extension-title pdf-field" data-pdf-field="spell.{{spellIndex}}.extension.{{@index}}.name">{{name}}</b>
+            {{#if description}}<div class="spell-extension-description pdf-field" data-pdf-field="spell.{{spellIndex}}.extension.{{@index}}.description" data-pdf-multiline="true">{{description}}</div>{{/if}}
+          </div>
+          {{/each}}
+        </div>
+        {{/if}}
+      </td>
     </tr>
     {{/each}}
   </tbody>

@@ -58,6 +58,7 @@ export function buildChromeLabels() {
     purse: _loc('purse'),
     liturgies: _loc('liturgies'),
     spells: _loc('spells'),
+    spellExtensions: _loc('dsa5-charexv2.spellExtensions'),
     tradition: _loc('tradition'),
     aspect: _loc('aspect'),
     feature: _loc('feature'),

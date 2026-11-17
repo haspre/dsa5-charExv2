@@ -74,4 +74,34 @@ const fractional = buildActorSnapshot({ ...trader, items: [
   { name: 'Kleinigkeit', type: 'equipment', system: { quantity: { value: 3 }, price: { value: 0.1 } } },
 ] }, 'de', { localize });
 assert.equal(fractional.inventoryValue.total, 0.3, 'currency rounding must not expose floating point noise');
+
+const caster = mundaneActor();
+caster.items = [
+  { name: 'Schutz', type: 'spell', system: {} },
+  { name: 'Ohne Erweiterung', type: 'spell', system: {} },
+  { name: 'Schutz', type: 'ritual', system: {} },
+  { name: 'Schutz - Verstärkt', type: 'spellextension', system: { source: 'Schutz', category: 'spell', description: { value: '<p>Mehr Wirkung.</p><p>Zwei Zeilen.</p>' }, gmdescription: { value: 'Nicht exportieren' } } },
+  { name: 'Ritualerweiterung', type: 'spellextension', system: { source: 'Schutz', category: 'ritual', description: { value: 'Nur für das Ritual.' } } },
+  { name: 'Nicht zugeordnet', type: 'spellextension', system: { source: 'Fremder Zauber', category: 'spell', description: { value: 'Nicht zuordnen.' } } },
+];
+const casting = buildActorSnapshot(caster, 'de', { localize });
+assert.deepEqual(casting.spells[0].extensions, [{ name: 'Schutz - Verstärkt', description: 'Mehr Wirkung.\nZwei Zeilen.' }]);
+assert.deepEqual(casting.spells[1].extensions, []);
+assert.deepEqual(casting.spells[2].extensions, [{ name: 'Ritualerweiterung', description: 'Nur für das Ritual.' }]);
+
+const learner = mundaneActor();
+learner.items = [
+  ['Zechen', 'body', 9], ['Überreden', 'social', 10], ['Klettern', 'body', 1],
+  ['Ätherkunde', 'knowledge', 3], ['Fesseln', 'nature', 2], ['Ölkunde', 'trade', 4],
+  ['Alchimie', 'trade', 5], ['Götter & Kulte', 'knowledge', 7], ['Fährtensuchen', 'nature', 6],
+  ['Betören', 'social', 11], ['Geographie', 'knowledge', 8], ['Zauberkunde', 'knowledge', 12],
+].map(([name, group, value]) => ({ name, type: 'skill', system: { group: { value: group }, talentValue: { value } } }));
+const learnerBefore = JSON.stringify(learner);
+const talents = buildActorSnapshot(learner, 'de', { localize }).talentGroups;
+assert.deepEqual(talents.map(group => group.rows.map(row => row.name)), [
+  ['Klettern', 'Zechen'], ['Betören', 'Überreden'], ['Fährtensuchen', 'Fesseln'],
+  ['Ätherkunde', 'Geographie', 'Götter & Kulte', 'Zauberkunde'], ['Alchimie', 'Ölkunde'],
+], 'talents sort alphabetically within each existing group, using German collation');
+assert.equal(talents[0].rows[0].sr, 1, 'values stay attached to their talent when sorting');
+assert.equal(JSON.stringify(learner), learnerBefore, 'sorting must not rearrange actor items');
 console.log('html-data-regression.test.mjs passed');

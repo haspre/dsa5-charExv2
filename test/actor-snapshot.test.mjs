@@ -41,7 +41,7 @@ assert.strictEqual(flying.check, 'COU/INT/AGI');
 assert.strictEqual(flying.sr, 4);
 assert.strictEqual(flying.enc, 'yes');
 assert(fat.talentGroups.find((g) => g.id === 'knowledge').rows.some((row) => row.name === 'Foo Lore'));
-assert.strictEqual(de.talentGroups[0].rows[0].name, 'Flying');
+assert.strictEqual(de.talentGroups[0].rows[0].name, 'Body Control');
 
 assert.deepStrictEqual(fat.languages, ['Language Garethi III']);
 assert.deepStrictEqual(fat.scripts, ['Literacy Kuslik Signs I']);

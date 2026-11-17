@@ -1,5 +1,6 @@
 {
   "dsa5-charexv2": {
+    "spellExtensions": "Erweiterungen",
     "unitPrice": "Stückpreis (ST)",
     "inventoryValue": "Ausrüstungswert (ST)",
     "knownInventoryValue": "Bekannter Ausrüstungswert (ST)",

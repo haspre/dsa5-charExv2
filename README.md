@@ -37,6 +37,8 @@ Energy and derived-value fields have additional vertical space for the embedded
 font. Talent tables use uniform single-line rows and a wider encumbrance column
 so values such as `ja`, `evtl` and `nein` fit. Long talent names shrink within
 their row instead of changing its height.
+Talents are sorted alphabetically within each group using the document language,
+including German umlauts; the established order of the groups is preserved.
 
 Magical special abilities include magical styles and advanced magical abilities.
 Tradition artifact abilities (DSA5 category `staff`) are exported separately,
@@ -47,6 +49,12 @@ Languages and scripts appear below the personal details and traits on the first
 page when space allows. The condition table is omitted. The redundant metadata
 row above the spell table is also omitted, leaving more space for spells and
 tradition artifact abilities. Longer content still continues onto another page.
+
+Owned spell extensions appear directly below their source spell, with editable
+names and descriptions. Assignment follows the extension's source name and
+category, keeping identically named spells and rituals separate. Extensions are
+included in the spell's effect block for pagination; spells without extensions
+receive no empty extension section. GM-only descriptions are not exported.
 
 Table columns are measured and fixed before capturing the page background;
 editable values use the same cell content area, padding and alignment. The

@@ -96,6 +96,13 @@ pricedActor.items.find(item => item.type === 'equipment').system.price = { value
 const pricedHtml = await renderSheet(buildActorSnapshot(pricedActor, 'en', { localize }), THEMES.TABLE, { render });
 assert(pricedHtml.includes('data-pdf-field="item.0.price"'), 'available unit prices are exported as form fields');
 assert(pricedHtml.includes('data-pdf-field="inventory.value"'), 'quantity-weighted valuation is exported');
+const extendedActor = fatActor();
+extendedActor.items.push({ name: 'Spell 1 - Longer range', type: 'spellextension', system: { source: 'Spell 1', category: 'spell', description: { value: '<p>Range doubles.</p>' } } });
+const extendedHtml = await renderSheet(buildActorSnapshot(extendedActor, 'en', { localize }), THEMES.TABLE, { render });
+assert(extendedHtml.includes('data-pdf-field="spell.0.extension.0.name"'));
+assert(extendedHtml.includes('data-pdf-field="spell.0.extension.0.description"'));
+assert(extendedHtml.includes('Range doubles.'));
+assert(!html.includes('.extension.'), 'no empty extension fields for spells without extensions');
 assert.strictEqual(plainText('Leit&shy;eigenschaft'), 'Leiteigenschaft');
 assert.strictEqual(plainText('GE&#47;KK'), 'GE/KK');
 assert.strictEqual(plainText('A&amp;shy;B'), 'AB');

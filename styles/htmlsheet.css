@@ -226,11 +226,38 @@
 }
 
 #dsa5-htmlsheet .spell-effect td {
+  padding-top: 0;
+  padding-bottom: 0;
   font-size: 9px;
   font-weight: 400;
   line-height: 1.35;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+
+#dsa5-htmlsheet .spell-effect-text { padding: 3px 0; }
+
+#dsa5-htmlsheet .spell-extensions {
+  border-top: 1px solid var(--sheet-rule);
+  padding: 3px 0;
+}
+
+#dsa5-htmlsheet .spell-extension-heading { font-weight: 700; }
+#dsa5-htmlsheet .spell-extension { margin-top: 4px; }
+
+#dsa5-htmlsheet .spell-extension-title {
+  display: block;
+  font-size: 10.5px;
+  line-height: 1.5;
+  min-height: 18px;
+}
+
+#dsa5-htmlsheet .spell-extension-description[data-pdf-multiline="true"] {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+  min-height: 22px;
+  white-space: pre-wrap;
 }
 
 #dsa5-htmlsheet .personal-layout {

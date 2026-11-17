@@ -423,6 +423,11 @@ export class ActorSnapshot {
       (groups[row.group] || groups.body).rows.push(row);
     }
 
+    const collator = new Intl.Collator(this.lang, { sensitivity: 'base' });
+    for (const group of Object.values(groups)) {
+      group.rows.sort((a, b) => collator.compare(a.name, b.name));
+    }
+
     return SKILL_GROUP_ORDER.map((id) => groups[id]);
   }
 
@@ -603,6 +608,14 @@ export class ActorSnapshot {
         castingTime: text(item.system?.castingTime?.value),
         range: text(item.system?.range?.value),
         effect: plainText(text(item.system?.effect?.value)),
+        extensions: this.filterType('spellextension', extension =>
+          text(extension.system?.source).trim() === text(item.name).trim()
+          && (text(extension.system?.category) || 'spell') === item.type,
+        ).map(extension => ({
+          name: text(extension.name),
+          description: plainText(text(extension.system?.description?.value)
+            .replace(/<br\s*\/?>|<\/(?:p|div|li)\s*>/gi, '\n')).trim(),
+        })),
         ic: text(item.system?.StF?.value),
         feature: text(item.system?.feature || item.system?.distribution?.value),
       };

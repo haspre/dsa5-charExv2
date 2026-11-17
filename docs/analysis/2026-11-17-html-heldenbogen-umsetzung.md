@@ -139,3 +139,18 @@ Tests decken Mengen, Nullpreise, fehlende Preise, Währungsrundung und die
 Trennung vom Geldbeutel ab. Browserprüfungen kontrollieren Mindestabmessungen,
 Abstände, Feldwerte und die unveränderten Spaltenpositionen im tatsächlichen
 Capture-Klon.
+
+## Nachtrag: Zaubererweiterungen (0.10.8)
+
+Im Actor vorhandene `spellextension`-Items werden über `system.source` und
+`system.category` dem passenden Zauber, Ritual bzw. der passenden Liturgie oder
+Zeremonie zugeordnet. Name und Beschreibung aus `system.description.value`
+erscheinen als editierbare Felder direkt im Wirkungsblock des jeweiligen
+Eintrags. Absatz- und Zeilenumbrüche bleiben als Klartext erhalten. Verfügbare,
+aber nicht im Actor enthaltene Erweiterungen werden nicht ergänzt; SL-interne
+Beschreibungen bleiben ausgeschlossen.
+
+Der gemeinsame Tabellenblock hält Erweiterungen und Zauber beim Seitenumbruch
+zusammen. Ohne Erweiterungen wird kein leerer Abschnitt angelegt. Die Tests
+prüfen Zuordnung trotz gleicher Namen verschiedener Zaubertypen, unzugeordnete
+Erweiterungen, Beschreibungen und die tatsächlichen PDF-Felder auf Folgeseiten.
