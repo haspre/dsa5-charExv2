@@ -225,6 +225,11 @@
   width: 16%;
 }
 
+#dsa5-htmlsheet .combat-techniques .col-sr {
+  width: 10%;
+  min-width: 52px;
+}
+
 #dsa5-htmlsheet .spell-effect td {
   padding-top: 0;
   padding-bottom: 0;

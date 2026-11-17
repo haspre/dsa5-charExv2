@@ -16,7 +16,7 @@
   ],
   "license": "LICENSE",
   "flags": {},
-  "version": "0.10.11",
+  "version": "0.10.12",
   "download": "https://github.com/haspre/dsa5-charExv2/archive/refs/heads/foundry14.zip",
   "relationships": {
     "systems": [

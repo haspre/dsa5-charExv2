@@ -68,6 +68,7 @@ for (const spell of actor.items.filter(item => item.type === 'spell')) {
   spell.system.effect.value = 'Lange Zauberwirkung mit mehreren Zeilen. '.repeat(12);
 }
 const snapshot = buildActorSnapshot(actor, 'en', { localize });
+snapshot.combatTechniques.forEach((technique, index) => { technique.sr = index % 2 ? 18 : 10; });
 
 const mime = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.ttf': 'font/ttf', '.webp': 'image/webp' };
 const server = http.createServer(async (req, res) => {
@@ -135,6 +136,10 @@ try {
         const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
         return {
           energyHeights: energy.map(el => el.getBoundingClientRect().height),
+          combatRatings: [...host.querySelectorAll('[data-pdf-field^="combat."][data-pdf-field$=".sr"]')].map(el => {
+            const style = getComputedStyle(el); ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            return { width: el.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight), textWidth: ctx.measureText(el.innerText).width };
+          }),
           rowHeights: rows.map(el => el.getBoundingClientRect().height),
           enc: enc.map(el => {
             const style = getComputedStyle(el); ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
@@ -167,6 +172,8 @@ try {
       } finally { host.remove(); }
     }, { html, prefix });
     assert(layout.energyHeights.every(height => height >= 28), `${theme}: energy fields need enough vertical space: ${layout.energyHeights}`);
+    assert(layout.combatRatings.length > 0);
+    assert(layout.combatRatings.every(field => field.width >= 40 && field.width >= field.textWidth + 4), `${theme}: combat FW fields need room for two digits and PDF padding: ${JSON.stringify(layout.combatRatings)}`);
     assert(Math.max(...layout.rowHeights) - Math.min(...layout.rowHeights) < 0.5, `${theme}: talent rows must have equal height`);
     assert(layout.enc.some(row => row.text === 'nein'));
     assert(layout.enc.every(row => row.spare >= 0), `${theme}: BE values must fit without clipping`);
@@ -260,6 +267,14 @@ try {
       .some(ref => ref.toString() === artifactWidgetRef.toString())) + 1;
     assert(artifactPageIndex > 0, 'artifact field is attached to an actual PDF page');
     assert(!fields.some(field => /(?:^|\.)cond\./.test(field.getName())), 'condition table must not be exported');
+    const combatRatings = fields.filter(field => /combat\.\d+\.sr$/.test(field.getName()));
+    assert.equal(combatRatings.length, snapshot.combatTechniques.length);
+    combatRatings.forEach((field, index) => {
+      assert.equal(field.getText(), String(snapshot.combatTechniques[index].sr));
+      const widget = field.acroField.getWidgets()[0];
+      assert(widget.getRectangle().width >= 30, 'combat FW widgets retain room for two digits');
+      assert(Number(/ ([\d.]+) Tf/.exec(widget.getDefaultAppearance())[1]) >= 8, 'combat FW remains legible without excessive shrinking');
+    });
     assert(!fields.some(field => /magic\.(tradition|feature|guidevalue|ae)$/.test(field.getName())), 'redundant magic metadata row must not be exported');
     for (const ending of ['derived.lp', 'derived.ae', 'derived.kp']) {
       const energy = fields.find(field => field.getName().endsWith(ending));
