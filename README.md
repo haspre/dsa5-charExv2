@@ -1,13 +1,13 @@
-![Version](https://img.shields.io/github/v/tag/Plushtoast/dsa5-char2pdfv2?label=Version&style=flat-square&color=2577a1) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FPlushtoast%2Fdsa5-char2pdfv2%2Ffoundry14%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibility.verified&style=flat-square&color=ff6400)
+![Version](https://img.shields.io/github/v/tag/haspre/dsa5-charExv2?label=Version&style=flat-square&color=2577a1) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhaspre%2Fdsa5-charExv2%2Ffoundry14%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibility.verified&style=flat-square&color=ff6400)
 
 > [!IMPORTANT]  
 >  
-> This module displaces JWinsens original [DSA5-Foundry-VTT-Char2PDF](https://github.com/JWinsen/DSA5-Foundry-VTT-Char2PDF)
-> Many thanks to his effort in creating the module!
+> This is [haspre's CharEx v2 fork](https://github.com/haspre/dsa5-charExv2), focused on improving the HTML character sheet and editable PDF export.
+> Based on the original work by JWinsen and its continuation by Plushtoast. Many thanks to both authors!
 
 <hr>
 
-# DSA5-Foundry-VTT-Char2PDF
+# DSA5 CharEx v2
 *Foundry VTT module to transfer the DSA 5 actors to PDF*
 
 This module is to extend the functionality of the [Foundry VTT](https://foundryvtt.com/) platform and gives the users of [The Dark Eye / Das schwarze Auge 5](https://foundryvtt.com/packages/dsa5) the possibility to export their characters as PDF.
@@ -62,22 +62,22 @@ notices accompany their bundle in `lib/`.
 See https://foundryvtt.wiki/en/basics/Modules. 
 
 1. Open the Add-on Modules tab in the Configuration and Setup dialog.
-2. Click Install Module, paste --> `https://github.com/Plushtoast/dsa5-char2pdfv2/releases/latest/download/module.json`
+2. Click Install Module, paste --> `https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json`
    in as the Manifest URL, then click Install.
 
 ### Manual Installation
 If the above installation doesn't work you can try doing it manually.
-Use this manifest link:
+Use this fork's manifest link:
 ```
-https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdfv2/foundry14/module.json
+https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json
 ```
 
 ### Completion of the installation
-As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` for your World, then enable the `DSA5 - Char2PDF` module.
+As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` for your World, then enable the `DSA5 - CharEx v2` module.
 
 ## Where to find the button for export ? 
 
-![alt text](https://github.com/Plushtoast/dsa5-char2pdfv2/blob/foundry14/Where_to_find_the_Button.png?raw=true)
+![Where to find the export button](Where_to_find_the_Button.png)
 
 Please be aware. This context menu entry only appears for actors of type `character`. Other types are not recognized. 
 

@@ -1,8 +1,12 @@
 {
   "id": "dsa5-char2pdfv2",
-  "title": "The Dark Eye 5th Ed. - Char2pdf",
-  "description": "Export your DSA5 Avatar to a PDF Template",
+  "title": "DSA5 - CharEx v2",
+  "description": "Export DSA5 characters to a styled HTML character sheet PDF with editable form fields.",
   "authors": [
+    {
+      "name": "haspre",
+      "url": "https://github.com/haspre"
+    },
     {
       "name": "JWinsen"
     },
@@ -10,10 +14,10 @@
       "name": "Plushtoast"
     }
   ],
-  "license": "MIT LICENSE",
+  "license": "LICENSE",
   "flags": {},
-  "version": "0.10.2",
-  "download": "https://github.com/Plushtoast/dsa5-char2pdfv2/releases/download/0.10.2/dsa5-char2pdfv2-0.10.2.zip",
+  "version": "0.10.3",
+  "download": "https://github.com/haspre/dsa5-charExv2/archive/refs/heads/foundry14.zip",
   "relationships": {
     "systems": [
       {
@@ -53,7 +57,7 @@
     "./lib/FileSaver.js",
     "./lib/pdf-lib.js"
   ],
-  "url": "https://github.com/Plushtoast/dsa5-char2pdfv2",
-  "manifest": "https://raw.githubusercontent.com/Plushtoast/dsa5-char2pdfv2/foundry14/module.json",
-  "bugs": "https://github.com/Plushtoast/dsa5-char2pdfv2/issues/new/choose"
+  "url": "https://github.com/haspre/dsa5-charExv2",
+  "manifest": "https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json",
+  "bugs": "https://github.com/haspre/dsa5-charExv2/issues"
 }
