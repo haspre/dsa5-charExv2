@@ -16,7 +16,7 @@
   ],
   "license": "LICENSE",
   "flags": {},
-  "version": "0.10.13",
+  "version": "0.11.0",
   "download": "https://github.com/haspre/dsa5-charExv2/releases/latest/download/dsa5-charexv2.zip",
   "relationships": {
     "systems": [
