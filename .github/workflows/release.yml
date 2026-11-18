@@ -1,0 +1,44 @@
+name: Publish latest Foundry release
+
+on:
+  push:
+    branches: [foundry14]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: foundry14-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/foundry14'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install test dependencies
+        run: npm ci
+      - name: Check HTML export
+        run: npm run test:html
+      - name: Build release assets
+        env:
+          RELEASE_TAG: build-${{ github.run_id }}-${{ github.run_attempt }}
+        run: python3 scripts/build-release.py --output dist --tag "$RELEASE_TAG"
+      - name: Publish release with assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: build-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          VERSION=$(node -p "require('./module.json').version")
+          gh release create "$RELEASE_TAG" dist/module.json dist/dsa5-charexv2.zip \
+            --target "$GITHUB_SHA" \
+            --title "CharEx v$VERSION (Build $GITHUB_RUN_NUMBER)" \
+            --notes-file dist/release-notes.md \
+            --latest

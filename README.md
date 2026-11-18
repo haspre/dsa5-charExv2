@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/github/v/tag/haspre/dsa5-charExv2?label=Version&style=flat-square&color=2577a1) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhaspre%2Fdsa5-charExv2%2Ffoundry14%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibility.verified&style=flat-square&color=ff6400)
+![Version](https://img.shields.io/github/v/tag/haspre/dsa5-charExv2?label=Version&style=flat-square&color=2577a1) ![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2Fhaspre%2Fdsa5-charExv2%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Core%20Compatible%20Version&query=$.compatibility.verified&style=flat-square&color=ff6400)
 
 > [!IMPORTANT]  
 >  
@@ -104,15 +104,30 @@ notices accompany their bundle in `lib/`.
 See https://foundryvtt.wiki/en/basics/Modules. 
 
 1. Open the Add-on Modules tab in the Configuration and Setup dialog.
-2. Click Install Module, paste --> `https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json`
+2. Click Install Module, paste --> `https://github.com/haspre/dsa5-charExv2/releases/latest/download/module.json`
    in as the Manifest URL, then click Install.
 
 ### Manual Installation
 If the above installation doesn't work you can try doing it manually.
 Use this fork's manifest link:
 ```
-https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json
+https://github.com/haspre/dsa5-charExv2/releases/latest/download/module.json
 ```
+
+### Automated releases
+
+Every push to `foundry14` runs the HTML export tests and publishes a new release
+marked **Latest**, with `module.json` and `dsa5-charexv2.zip` as downloadable assets.
+The manifest URL above always points to the latest release. Each released
+manifest downloads the ZIP from its own build tag, keeping the manifest and
+module files consistent. The ZIP contains `module.json` at its root and excludes
+development dependencies and tests.
+
+The workflow uses the built-in `GITHUB_TOKEN`; no additional secret is needed.
+It can also be started manually on `foundry14` from GitHub Actions. Increase
+`version` in `module.json` when publishing an update that Foundry should detect;
+the workflow preserves that version. The latest URLs become available after the
+first successful release workflow run.
 
 ### Completion of the installation
 As `gamemaster` go to the `Manage Modules` options menu in the `Game Settings` for your World, then enable the `DSA5 - CharEx v2` module.

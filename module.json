@@ -17,7 +17,7 @@
   "license": "LICENSE",
   "flags": {},
   "version": "0.10.13",
-  "download": "https://github.com/haspre/dsa5-charExv2/archive/refs/heads/foundry14.zip",
+  "download": "https://github.com/haspre/dsa5-charExv2/releases/latest/download/dsa5-charexv2.zip",
   "relationships": {
     "systems": [
       {
@@ -58,6 +58,6 @@
     "./lib/pdf-lib.js"
   ],
   "url": "https://github.com/haspre/dsa5-charExv2",
-  "manifest": "https://raw.githubusercontent.com/haspre/dsa5-charExv2/foundry14/module.json",
+  "manifest": "https://github.com/haspre/dsa5-charExv2/releases/latest/download/module.json",
   "bugs": "https://github.com/haspre/dsa5-charExv2/issues"
 }
